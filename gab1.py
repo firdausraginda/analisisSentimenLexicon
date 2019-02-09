@@ -27,7 +27,7 @@ dataStatis = 'Pak andit kalau mengajar bicaranya cepat sekali jadi sulit untuk m
 arrPositif = []
 arrNegatif = []
 
-# -------------import excel inset lexicon-------------
+# -------------itung sentiment score-------------
 def sentimentScore():
     global arrPositif
     global arrNegatif
@@ -42,7 +42,7 @@ def sentimentScore():
     sentimentScore = countNegatif + countPositif
     return sentimentScore
 
-# -------------import excel inset lexicon-------------
+# -------------cari senti word-------------
 def cariSentiWord(kata):
     global arrPositif
     global arrNegatif
