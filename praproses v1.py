@@ -1,5 +1,7 @@
-# -------------1. register lib-------------
+# -------------komentar-------------
+# urutan praproses mikir sendiri
 
+# -------------1. register lib-------------
 # tokenization
 from nltk.tokenize import sent_tokenize, word_tokenize
 

@@ -1,3 +1,8 @@
+# -------------komentar-------------
+# *sudah bisa handle ngram = 2 dan 3 namun masih ada masalah
+# *belum bisa handle kata yg di pisah dgn strip misal = hati-hati
+# *belum looping smua dataset
+
 # -------------register lib-------------
 # import excel
 from openpyxl import load_workbook
