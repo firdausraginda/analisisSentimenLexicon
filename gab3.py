@@ -28,7 +28,8 @@ stopword = factory.create_stop_word_remover()
 # -------------global variable-------------
 # dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
 # dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
-dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum.'
+# dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum.'
+dataStatis = 'Jangan terlalu sering bercanda pak, walaupun bercanda itu perlu'
 
 # -------------import excel dataset-------------
 def importExcelDataSet():
