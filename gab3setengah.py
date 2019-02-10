@@ -1,5 +1,5 @@
 # -------------komentar-------------
-# *sudah bisa handle n-gram = 2 dan 3, tapi masih ada masalah
+# *sudah bisa handle n-gram = 2 dan 3
 # *belum bisa handle n-gram = 2 dan 3 yg bukan kata dasar
 # *belum bisa handle kata yg di pisah dgn strip misal = tercengang-cengang
 # *belum looping smua dataset
@@ -27,11 +27,13 @@ factory = StopWordRemoverFactory()
 stopword = factory.create_stop_word_remover()
 
 # -------------global variable-------------
-# dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
+# dataStatis = 'buang air kecil karena kurang buang pikiran air, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
 # dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
 # dataStatis = 'aku tarik tarik napas habis jalan bebas hambat, tarik napas habis, tarik membuat orak senyum.'
 # dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
-dataStatis = 'perang mulut, mulut gatal'
+# dataStatis = 'menaruh hati kepadanya, menyakitkanku'
+dataStatis = 'perang mulut, gatal'
+# dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
 
 # -------------import excel dataset-------------
 def importExcelDataSet():
@@ -151,7 +153,7 @@ def sentiWord(hasilPraproses):
                 for kataParam in hasilNGram2:
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
-                        # break
+                        break
                         
     if (len(arrNegatifNGram3) > 0):
         for kata in arrNegatifNGram3:
@@ -164,7 +166,7 @@ def sentiWord(hasilPraproses):
                 for kataParam in hasilNGram2:
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
-                        # break
+                        break
 
     # cari sentiword dgn n-gram = 2
     for kata in hasilNGram2:

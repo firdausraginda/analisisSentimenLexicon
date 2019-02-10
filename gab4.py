@@ -1,6 +1,6 @@
 # -------------komentar-------------
-# *sudah bisa handle n-gram = 2 dan 3, tapi masih ada masalah
-# *progres handle n-gram = 2 dan 3 yg bukan kata dasar
+# *sudah bisa handle n-gram = 2 dan 3
+# *sudah bisa handle n-gram = 2 dan 3 yg bukan kata dasar
 # *belum bisa handle kata yg di pisah dgn strip misal = tercengang-cengang
 # *belum looping smua dataset
 
@@ -29,8 +29,11 @@ stopword = factory.create_stop_word_remover()
 # -------------global variable-------------
 # dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
 # dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
-# dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
-dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
+dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
+# dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
+# dataStatis = 'menaruh hati kepadanya, menyakitkanku'
+# dataStatis = 'perang mulut, cium telapak kaki'
+# dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
 
 # -------------import excel dataset-------------
 def importExcelDataSet():
@@ -89,12 +92,13 @@ def nGram2(hasilPraproses):
 
     total = int(len(hasilPraproses))
 
-    for i in range(0, total):
-        if (i == total-1):
-            return hasilNGram2
-        else:
-            tempKata = hasilPraproses[i] + ' ' + hasilPraproses[i+1]
-            hasilNGram2.append(tempKata)
+    if (total >= 2):
+        for i in range(0, total):
+            if (i == total-1):
+                return hasilNGram2
+            else:
+                tempKata = hasilPraproses[i] + ' ' + hasilPraproses[i+1]
+                hasilNGram2.append(tempKata)
     
     return hasilNGram2
 
@@ -105,12 +109,13 @@ def nGram3(hasilPraproses):
 
     total = int(len(hasilPraproses))
 
-    for j in range(0, total):
-        if (j == total-2):
-            return hasilNGram3
-        else:
-            tempKata = hasilPraproses[j] + ' ' + hasilPraproses[j+1] + ' ' + hasilPraproses[j+2] 
-            hasilNGram3.append(tempKata)
+    if (total >= 3):
+        for j in range(0, total):
+            if (j == total-2):
+                return hasilNGram3
+            else:
+                tempKata = hasilPraproses[j] + ' ' + hasilPraproses[j+1] + ' ' + hasilPraproses[j+2] 
+                hasilNGram3.append(tempKata)
    
     return hasilNGram3
 
@@ -146,9 +151,11 @@ def sentiWordBeforeStem(hasilToken):
                 for kataParam in hasilNGram1:
                     if kataParam == kata:
                         hasilNGram1.remove(kataParam)
+                        break
                 for kataParam in hasilNGram2:
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
+                        break
                             
     if (len(arrNegatifNGram3) > 0):
         for kata in arrNegatifNGram3:
@@ -157,9 +164,11 @@ def sentiWordBeforeStem(hasilToken):
                 for kataParam in hasilNGram1:
                     if kataParam == kata:
                         hasilNGram1.remove(kataParam)
+                        break
                 for kataParam in hasilNGram2:
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
+                        break
 
     # cari sentiword dgn n-gram = 2
     for kata in hasilNGram2:
@@ -182,6 +191,7 @@ def sentiWordBeforeStem(hasilToken):
                 for kataParam in hasilNGram1:
                     if kataParam == kata:
                         hasilNGram1.remove(kataParam)
+                        break
     if (len(arrNegatifNGram2) > 0):
         for kata in arrNegatifNGram2:
             token_temp = (word_tokenize(kata[0]))
@@ -189,6 +199,7 @@ def sentiWordBeforeStem(hasilToken):
                 for kataParam in hasilNGram1:
                     if kataParam == kata:
                         hasilNGram1.remove(kataParam)
+                        break
 
     for kata in arrPositifNGram2:
         hasilNGramPositif.append(kata)
@@ -233,9 +244,11 @@ def sentiWordAfterStem(hasilPraproses, paramNGramPositif, paramNGramNegatif):
                 for kataParam in hasilNGram1:
                     if kataParam == kata:
                         hasilNGram1.remove(kataParam)
+                        break
                 for kataParam in hasilNGram2:
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
+                        break
                         
     if (len(arrNegatifNGram3) > 0):
         for kata in arrNegatifNGram3:
@@ -244,9 +257,11 @@ def sentiWordAfterStem(hasilPraproses, paramNGramPositif, paramNGramNegatif):
                 for kataParam in hasilNGram1:
                     if kataParam == kata:
                         hasilNGram1.remove(kataParam)
+                        break
                 for kataParam in hasilNGram2:
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
+                        break
 
     # cari sentiword dgn n-gram = 2
     for kata in hasilNGram2:
@@ -269,6 +284,7 @@ def sentiWordAfterStem(hasilPraproses, paramNGramPositif, paramNGramNegatif):
                 for kataParam in hasilNGram1:
                     if kataParam == kata:
                         hasilNGram1.remove(kataParam)
+                        break
     if (len(arrNegatifNGram2) > 0):
         for kata in arrNegatifNGram2:
             token_temp = (word_tokenize(kata[0]))
@@ -276,6 +292,7 @@ def sentiWordAfterStem(hasilPraproses, paramNGramPositif, paramNGramNegatif):
                 for kataParam in hasilNGram1:
                     if kataParam == kata:
                         hasilNGram1.remove(kataParam)
+                        break
 
     # cari sentiword dgn n-gram = 1
     for kata in hasilNGram1:
