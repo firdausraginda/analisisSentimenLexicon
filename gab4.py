@@ -31,9 +31,9 @@ stopword = factory.create_stop_word_remover()
 # dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
 # dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
 # dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
-# dataStatis = 'jalan bebas hambat, jalan bebas hambat'
-dataStatis = 'perang mulut, suka mengganggu'
-# dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
+# dataStatis = 'jalan bebas hambat, suka mengganggu'
+# dataStatis = 'perang mulut, suka mengganggu'
+dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
 
 # -------------import excel dataset-------------
 def importExcelDataSet():
@@ -220,81 +220,81 @@ def sentiWordAfterStem(hasilPraproses, paramNGramPositif, paramNGramNegatif):
     arrPositif = []
     arrNegatif = []
 
-    hasilNGram1, hasilNGram2, hasilNGram3 = nGramAll(hasilPraproses)
+    # hasilNGram1, hasilNGram2, hasilNGram3 = nGramAll(hasilPraproses)
 
-    # cari sentiword dgn n-gram = 3
-    for kata in hasilNGram3:
-        for i in range(2,3611):
-            if (kata == positif.cell(row=i, column=1).value) :
-                sentiWordPositif = (positif.cell(row=i, column=1).value)
-                weightPositif = (positif.cell(row=i, column=2).value)
-                arrPositifNGram3.append([sentiWordPositif,weightPositif])
-        for i in range(2, 6611):
-            if (kata == negatif.cell(row=i, column=1).value) :
-                sentiWordNegatif = (negatif.cell(row=i, column=1).value)
-                weightNegatif = (negatif.cell(row=i, column=2).value)
-                arrNegatifNGram3.append([sentiWordNegatif,weightNegatif])
+    # # cari sentiword dgn n-gram = 3
+    # for kata in hasilNGram3:
+    #     for i in range(2,3611):
+    #         if (kata == positif.cell(row=i, column=1).value) :
+    #             sentiWordPositif = (positif.cell(row=i, column=1).value)
+    #             weightPositif = (positif.cell(row=i, column=2).value)
+    #             arrPositifNGram3.append([sentiWordPositif,weightPositif])
+    #     for i in range(2, 6611):
+    #         if (kata == negatif.cell(row=i, column=1).value) :
+    #             sentiWordNegatif = (negatif.cell(row=i, column=1).value)
+    #             weightNegatif = (negatif.cell(row=i, column=2).value)
+    #             arrNegatifNGram3.append([sentiWordNegatif,weightNegatif])
 
-    # hapus kata ngram3 pada ngram1 dan ngram2 supaya tidak double
-    if (len(arrPositifNGram3) > 0):
-        for kata in arrPositifNGram3:
-            token_temp = (word_tokenize(kata[0]))
-            for kata in token_temp:
-                for kataParam in hasilNGram1:
-                    if kataParam == kata:
-                        hasilNGram1.remove(kataParam)
-                        break
-                for kataParam in hasilNGram2:
-                    if kata in kataParam:
-                        hasilNGram2.remove(kataParam)
-                        break
+    # # hapus kata ngram3 pada ngram1 dan ngram2 supaya tidak double
+    # if (len(arrPositifNGram3) > 0):
+    #     for kata in arrPositifNGram3:
+    #         token_temp = (word_tokenize(kata[0]))
+    #         for kata in token_temp:
+    #             for kataParam in hasilNGram1:
+    #                 if kataParam == kata:
+    #                     hasilNGram1.remove(kataParam)
+    #                     break
+    #             for kataParam in hasilNGram2:
+    #                 if kata in kataParam:
+    #                     hasilNGram2.remove(kataParam)
+    #                     break
                         
-    if (len(arrNegatifNGram3) > 0):
-        for kata in arrNegatifNGram3:
-            token_temp = (word_tokenize(kata[0]))
-            for kata in token_temp:
-                for kataParam in hasilNGram1:
-                    if kataParam == kata:
-                        hasilNGram1.remove(kataParam)
-                        break
-                for kataParam in hasilNGram2:
-                    if kata in kataParam:
-                        hasilNGram2.remove(kataParam)
-                        break
+    # if (len(arrNegatifNGram3) > 0):
+    #     for kata in arrNegatifNGram3:
+    #         token_temp = (word_tokenize(kata[0]))
+    #         for kata in token_temp:
+    #             for kataParam in hasilNGram1:
+    #                 if kataParam == kata:
+    #                     hasilNGram1.remove(kataParam)
+    #                     break
+    #             for kataParam in hasilNGram2:
+    #                 if kata in kataParam:
+    #                     hasilNGram2.remove(kataParam)
+    #                     break
 
-    # cari sentiword dgn n-gram = 2
-    for kata in hasilNGram2:
-        for i in range(2,3611):
-            if (kata == positif.cell(row=i, column=1).value) :
-                sentiWordPositif = (positif.cell(row=i, column=1).value)
-                weightPositif = (positif.cell(row=i, column=2).value)
-                arrPositifNGram2.append([sentiWordPositif,weightPositif])
-        for i in range(2,6611):
-            if (kata == negatif.cell(row=i, column=1).value) :
-                sentiWordNegatif = (negatif.cell(row=i, column=1).value)
-                weightNegatif = (negatif.cell(row=i, column=2).value)
-                arrNegatifNGram2.append([sentiWordNegatif,weightNegatif])
+    # # cari sentiword dgn n-gram = 2
+    # for kata in hasilNGram2:
+    #     for i in range(2,3611):
+    #         if (kata == positif.cell(row=i, column=1).value) :
+    #             sentiWordPositif = (positif.cell(row=i, column=1).value)
+    #             weightPositif = (positif.cell(row=i, column=2).value)
+    #             arrPositifNGram2.append([sentiWordPositif,weightPositif])
+    #     for i in range(2,6611):
+    #         if (kata == negatif.cell(row=i, column=1).value) :
+    #             sentiWordNegatif = (negatif.cell(row=i, column=1).value)
+    #             weightNegatif = (negatif.cell(row=i, column=2).value)
+    #             arrNegatifNGram2.append([sentiWordNegatif,weightNegatif])
 
-    # hapus kata ngram2 pada ngram1 supaya tidak double
-    if (len(arrPositifNGram2) > 0):
-        for kata in arrPositifNGram2:
-            token_temp = (word_tokenize(kata[0]))
-            for kata in token_temp:
-                for kataParam in hasilNGram1:
-                    if kataParam == kata:
-                        hasilNGram1.remove(kataParam)
-                        break
-    if (len(arrNegatifNGram2) > 0):
-        for kata in arrNegatifNGram2:
-            token_temp = (word_tokenize(kata[0]))
-            for kata in token_temp:
-                for kataParam in hasilNGram1:
-                    if kataParam == kata:
-                        hasilNGram1.remove(kataParam)
-                        break
+    # # hapus kata ngram2 pada ngram1 supaya tidak double
+    # if (len(arrPositifNGram2) > 0):
+    #     for kata in arrPositifNGram2:
+    #         token_temp = (word_tokenize(kata[0]))
+    #         for kata in token_temp:
+    #             for kataParam in hasilNGram1:
+    #                 if kataParam == kata:
+    #                     hasilNGram1.remove(kataParam)
+    #                     break
+    # if (len(arrNegatifNGram2) > 0):
+    #     for kata in arrNegatifNGram2:
+    #         token_temp = (word_tokenize(kata[0]))
+    #         for kata in token_temp:
+    #             for kataParam in hasilNGram1:
+    #                 if kataParam == kata:
+    #                     hasilNGram1.remove(kataParam)
+    #                     break
 
     # cari sentiword dgn n-gram = 1
-    for kata in hasilNGram1:
+    for kata in hasilPraproses:
         for i in range(2,6611):
             if (kata == positif.cell(row=i, column=1).value) :
                 sentiWordPositif = (positif.cell(row=i, column=1).value)
@@ -305,14 +305,14 @@ def sentiWordAfterStem(hasilPraproses, paramNGramPositif, paramNGramNegatif):
                 weightNegatif = (negatif.cell(row=i, column=2).value)
                 arrNegatif.append([sentiWordNegatif,weightNegatif])
 
-    for kata in arrPositifNGram2:
-        arrPositif.append(kata)
-    for kata in arrNegatifNGram2:
-        arrNegatif.append(kata)
-    for kata in arrPositifNGram3:
-        arrPositif.append(kata)
-    for kata in arrNegatifNGram3:
-        arrNegatif.append(kata)
+    # for kata in arrPositifNGram2:
+    #     arrPositif.append(kata)
+    # for kata in arrNegatifNGram2:
+    #     arrNegatif.append(kata)
+    # for kata in arrPositifNGram3:
+    #     arrPositif.append(kata)
+    # for kata in arrNegatifNGram3:
+    #     arrNegatif.append(kata)
 
     for kata in paramNGramPositif:
         arrPositif.append(kata)
