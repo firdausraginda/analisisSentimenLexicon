@@ -29,8 +29,9 @@ stopword = factory.create_stop_word_remover()
 # -------------global variable-------------
 # dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
 # dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
-dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
-# dataStatis = 'Jangan terlalu sering bercanda pak, walaupun bercanda itu perlu'
+# dataStatis = 'aku tarik tarik napas habis jalan bebas hambat, tarik napas habis, tarik membuat orak senyum.'
+# dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
+dataStatis = 'perang mulut, mulut gatal'
 
 # -------------import excel dataset-------------
 def importExcelDataSet():
@@ -114,8 +115,8 @@ def nGram3(hasilPraproses):
    
     return hasilNGram3
 
-# -------------cari senti word-------------
-def cariSentiWord(param1, param2, param3):
+# -------------cari senti word setelah stemming-------------
+def sentiWord(hasilPraproses):
     arrPositifNGram3 = []
     arrNegatifNGram3 = []
     arrPositifNGram2 = []
@@ -123,8 +124,10 @@ def cariSentiWord(param1, param2, param3):
     arrPositif = []
     arrNegatif = []
 
+    hasilNGram1, hasilNGram2, hasilNGram3 = nGramAll(hasilPraproses)
+
     # cari sentiword dgn n-gram = 3
-    for kata in param3:
+    for kata in hasilNGram3:
         for i in range(2,3611):
             if (kata == positif.cell(row=i, column=1).value) :
                 sentiWordPositif = (positif.cell(row=i, column=1).value)
@@ -141,26 +144,30 @@ def cariSentiWord(param1, param2, param3):
         for kata in arrPositifNGram3:
             token_temp = (word_tokenize(kata[0]))
             for kata in token_temp:
-                for kataParam in param1:
+                for kataParam in hasilNGram1:
                     if kataParam == kata:
-                        param1.remove(kataParam)
-                for kataParam in param2:
+                        hasilNGram1.remove(kataParam)
+                        break
+                for kataParam in hasilNGram2:
                     if kata in kataParam:
-                        param2.remove(kataParam)
-
+                        hasilNGram2.remove(kataParam)
+                        # break
+                        
     if (len(arrNegatifNGram3) > 0):
         for kata in arrNegatifNGram3:
             token_temp = (word_tokenize(kata[0]))
             for kata in token_temp:
-                for kataParam in param1:
+                for kataParam in hasilNGram1:
                     if kataParam == kata:
-                        param1.remove(kataParam)
-                for kataParam in param2:
+                        hasilNGram1.remove(kataParam)
+                        break
+                for kataParam in hasilNGram2:
                     if kata in kataParam:
-                        param2.remove(kataParam)
+                        hasilNGram2.remove(kataParam)
+                        # break
 
     # cari sentiword dgn n-gram = 2
-    for kata in param2:
+    for kata in hasilNGram2:
         for i in range(2,3611):
             if (kata == positif.cell(row=i, column=1).value) :
                 sentiWordPositif = (positif.cell(row=i, column=1).value)
@@ -177,19 +184,21 @@ def cariSentiWord(param1, param2, param3):
         for kata in arrPositifNGram2:
             token_temp = (word_tokenize(kata[0]))
             for kata in token_temp:
-                for kataParam in param1:
+                for kataParam in hasilNGram1:
                     if kataParam == kata:
-                        param1.remove(kata)
+                        hasilNGram1.remove(kataParam)
+                        break
     if (len(arrNegatifNGram2) > 0):
         for kata in arrNegatifNGram2:
             token_temp = (word_tokenize(kata[0]))
             for kata in token_temp:
-                for kataParam in param1:
+                for kataParam in hasilNGram1:
                     if kataParam == kata:
-                        param1.remove(kata)
+                        hasilNGram1.remove(kataParam)
+                        break
 
     # cari sentiword dgn n-gram = 1
-    for kata in param1:
+    for kata in hasilNGram1:
         for i in range(2,6611):
             if (kata == positif.cell(row=i, column=1).value) :
                 sentiWordPositif = (positif.cell(row=i, column=1).value)
@@ -208,7 +217,7 @@ def cariSentiWord(param1, param2, param3):
         arrPositif.append(kata)
     for kata in arrNegatifNGram3:
         arrNegatif.append(kata)
-    
+
     print('arrPositif: ', arrPositif)
     print('arrNegatif: ', arrNegatif)
     
@@ -240,8 +249,7 @@ hasilPraprosesCoding = hasilStopWord
 
 print('hasil praposes: ', hasilPraprosesCoding)
 
-hasilNGram1, hasilNGram2, hasilNGram3 = nGramAll(hasilPraprosesCoding)
-hasilPositif, hasilNegatif = cariSentiWord(hasilNGram1, hasilNGram2, hasilNGram3)
+hasilPositif, hasilNegatif = sentiWord(hasilPraprosesCoding)
 hasilSentimen = sentimentScore(hasilPositif, hasilNegatif)
 
 print('hasil sentimen score: ', hasilSentimen)
