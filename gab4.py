@@ -29,10 +29,10 @@ stopword = factory.create_stop_word_remover()
 # -------------global variable-------------
 # dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
 # dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
-dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
+# dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
 # dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
-# dataStatis = 'menaruh hati kepadanya, menyakitkanku'
-# dataStatis = 'perang mulut, cium telapak kaki'
+# dataStatis = 'jalan bebas hambat, jalan bebas hambat'
+dataStatis = 'perang mulut, suka mengganggu'
 # dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
 
 # -------------import excel dataset-------------
@@ -92,13 +92,12 @@ def nGram2(hasilPraproses):
 
     total = int(len(hasilPraproses))
 
-    if (total >= 2):
-        for i in range(0, total):
-            if (i == total-1):
-                return hasilNGram2
-            else:
-                tempKata = hasilPraproses[i] + ' ' + hasilPraproses[i+1]
-                hasilNGram2.append(tempKata)
+    for i in range(0, total):
+        if (i == total-1):
+            return hasilNGram2
+        else:
+            tempKata = hasilPraproses[i] + ' ' + hasilPraproses[i+1]
+            hasilNGram2.append(tempKata)
     
     return hasilNGram2
 
