@@ -1,5 +1,5 @@
 # -------------komentar-------------
-# *belum bisa handle ngram = 2 dan 3
+# *belum bisa handle n-gram = 2 dan 3
 # *belum bisa handle kata yg di pisah dgn strip misal = hati-hati
 # *belum looping smua dataset
 

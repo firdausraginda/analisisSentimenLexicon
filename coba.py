@@ -1,11 +1,9 @@
 # -------------komentar-------------
 # untuk coba coba lib
 
-myList = ['agi', 'ganteng', 'banget', 'aduh', 'ga', 'tahan']
-hapus = ['ganteng', 'ga']
-print(myList)
-
-for kata in hapus:
-    myList.remove(kata)
-    
-print(myList)
+stringCoba = 'agi ganteng banget'
+cari = 'ganteng'
+if (cari in stringCoba):
+    print('ada')
+else:
+    print('gada')

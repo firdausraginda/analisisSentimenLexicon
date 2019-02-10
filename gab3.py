@@ -1,5 +1,5 @@
 # -------------komentar-------------
-# *progres handle n-gram = 2 dan 3
+# *sudah bisa handle n-gram = 2 dan 3 tapi belum bisa handle kata yg bukan kata dasar
 # *belum bisa handle kata yg di pisah dgn strip misal = hati-hati
 # *belum looping smua dataset
 
@@ -27,7 +27,10 @@ stopword = factory.create_stop_word_remover()
 
 # -------------global variable-------------
 punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
-dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
+# dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
+# dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
+# dataStatis = 'aku tarik napas habis, membuat orak senyum.'
+dataStatis = 'pengen marah aku teh, tapi gimana ya'
 arrPositif = []
 arrNegatif = []
 hasilNGram1 = []
@@ -112,41 +115,77 @@ def nGram3(hasilPraproses):
             tempKata = hasilPraproses[j] + ' ' + hasilPraproses[j+1] + ' ' + hasilPraproses[j+2] 
             hasilNGram3.append(tempKata)
 
-# -------------cari senti word positif-------------
-def cariSentiWordPositif(param1, param2, param3):
+# -------------cari senti word-------------
+def cariSentiWord(param1, param2, param3):
     arrPositifNGram3 = []
+    arrNegatifNGram3 = []
     arrPositifNGram2 = []
+    arrNegatifNGram2 = []
     global arrPositif
 
     # cari sentiword dgn n-gram = 3
     for kata in param3:
-        for i in range(2,6611):
+        for i in range(2,3611):
             if (kata == positif.cell(row=i, column=1).value) :
                 sentiWordPositif = (positif.cell(row=i, column=1).value)
                 weightPositif = (positif.cell(row=i, column=2).value)
                 arrPositifNGram3.append([sentiWordPositif,weightPositif])
+        for i in range(2, 6611):
+            if (kata == negatif.cell(row=i, column=1).value) :
+                sentiWordNegatif = (negatif.cell(row=i, column=1).value)
+                weightNegatif = (negatif.cell(row=i, column=2).value)
+                arrNegatifNGram3.append([sentiWordNegatif,weightNegatif])
 
-    # hapus kata ngram3 pada ngram1 supaya tidak double
+    # hapus kata ngram3 pada ngram1 dan ngram2 supaya tidak double
     if (len(arrPositifNGram3) > 0):
         for kata in arrPositifNGram3:
             token_temp = (word_tokenize(kata[0]))
             for kata in token_temp:
-                param1.remove(kata)
+                for kataParam in param1:
+                    if kataParam == kata:
+                        param1.remove(kataParam)
+                for kataParam in param2:
+                    if kata in kataParam:
+                        param2.remove(kataParam)
+    if (len(arrNegatifNGram3) > 0):
+        for kata in arrNegatifNGram3:
+            token_temp = (word_tokenize(kata[0]))
+            for kata in token_temp:
+                for kataParam in param1:
+                    if kataParam == kata:
+                        param1.remove(kataParam)
+                for kataParam in param2:
+                    if kata in kataParam:
+                        param2.remove(kataParam)
 
     # cari sentiword dgn n-gram = 2
     for kata in param2:
-        for i in range(2,6611):
+        for i in range(2,3611):
             if (kata == positif.cell(row=i, column=1).value) :
                 sentiWordPositif = (positif.cell(row=i, column=1).value)
                 weightPositif = (positif.cell(row=i, column=2).value)
                 arrPositifNGram2.append([sentiWordPositif,weightPositif])
+        for i in range(2,6611):
+            if (kata == negatif.cell(row=i, column=1).value) :
+                sentiWordNegatif = (negatif.cell(row=i, column=1).value)
+                weightNegatif = (negatif.cell(row=i, column=2).value)
+                arrNegatifNGram2.append([sentiWordNegatif,weightNegatif])
 
     # hapus kata ngram2 pada ngram1 supaya tidak double
     if (len(arrPositifNGram2) > 0):
         for kata in arrPositifNGram2:
             token_temp = (word_tokenize(kata[0]))
             for kata in token_temp:
-                param1.remove(kata)
+                for kataParam in param1:
+                    if kataParam == kata:
+                        param1.remove(kata)
+    if (len(arrNegatifNGram2) > 0):
+        for kata in arrNegatifNGram2:
+            token_temp = (word_tokenize(kata[0]))
+            for kata in token_temp:
+                for kataParam in param1:
+                    if kataParam == kata:
+                        param1.remove(kata)
 
     # cari sentiword dgn n-gram = 1
     for kata in param1:
@@ -155,60 +194,17 @@ def cariSentiWordPositif(param1, param2, param3):
                 sentiWordPositif = (positif.cell(row=i, column=1).value)
                 weightPositif = (positif.cell(row=i, column=2).value)
                 arrPositif.append([sentiWordPositif,weightPositif])
+            if (kata == negatif.cell(row=i, column=1).value) :
+                sentiWordNegatif = (negatif.cell(row=i, column=1).value)
+                weightNegatif = (negatif.cell(row=i, column=2).value)
+                arrNegatif.append([sentiWordNegatif,weightNegatif])
 
     for kata in arrPositifNGram2:
         arrPositif.append(kata)
-    
-    for kata in arrPositifNGram3:
-        arrPositif.append(kata)
-
-# -------------cari senti word negatif-------------
-def cariSentiWordNegatif(param1, param2, param3):
-    arrNegatifNGram3 = []
-    arrNegatifNGram2 = []
-    global arrNegatif
-
-    # cari sentiword dgn n-gram = 3
-    for kata in param3:
-        for i in range(2,6611):
-            if (kata == negatif.cell(row=i, column=1).value) :
-                sentiWordPositif = (negatif.cell(row=i, column=1).value)
-                weightPositif = (negatif.cell(row=i, column=2).value)
-                arrNegatifNGram3.append([sentiWordPositif,weightPositif])
-
-    # hapus kata ngram3 pada ngram1 supaya tidak double
-    if (len(arrNegatifNGram3) > 0):
-        for kata in arrNegatifNGram3:
-            token_temp = (word_tokenize(kata[0]))
-            for kata in token_temp:
-                param1.remove(kata)
-
-    # cari sentiword dgn n-gram = 2
-    for kata in param2:
-        for i in range(2,6611):
-            if (kata == negatif.cell(row=i, column=1).value) :
-                sentiWordPositif = (negatif.cell(row=i, column=1).value)
-                weightPositif = (negatif.cell(row=i, column=2).value)
-                arrNegatifNGram2.append([sentiWordPositif,weightPositif])
-
-    # hapus kata ngram2 pada ngram1 supaya tidak double
-    if (len(arrNegatifNGram2) > 0):
-        for kata in arrNegatifNGram2:
-            token_temp = (word_tokenize(kata[0]))
-            for kata in token_temp:
-                param1.remove(kata)
-
-    # cari sentiword dgn n-gram = 1
-    for kata in param1:
-        for i in range(2,6611):
-            if (kata == negatif.cell(row=i, column=1).value) :
-                sentiWordPositif = (negatif.cell(row=i, column=1).value)
-                weightPositif = (negatif.cell(row=i, column=2).value)
-                arrNegatif.append([sentiWordPositif,weightPositif])
-
     for kata in arrNegatifNGram2:
         arrNegatif.append(kata)
-    
+    for kata in arrPositifNGram3:
+        arrPositif.append(kata)
     for kata in arrNegatifNGram3:
         arrNegatif.append(kata)
 
@@ -232,21 +228,14 @@ hasilToken = tokenization(dataStatis)
 hasilStem = stemmingWord(hasilToken)
 hasilNoPuct = punctuationRemoval(hasilStem)
 hasilStopWord = stopwordRemoval(hasilNoPuct)
+hasilPraprosesCoding = hasilStopWord
 
-print('hasil praposes: ', hasilStopWord)
+print('hasil praposes: ', hasilPraprosesCoding)
 
-nGramAll(hasilStopWord)
-
-print(hasilNGram1)
-print(hasilNGram2)
-print(hasilNGram3)
-
-cariSentiWordNegatif(hasilNGram1, hasilNGram2, hasilNGram3)
-cariSentiWordPositif(hasilNGram1, hasilNGram2, hasilNGram3)
-
+nGramAll(hasilPraprosesCoding)
+cariSentiWord(hasilNGram1, hasilNGram2, hasilNGram3)
 hasilSentimen = sentimentScore()
 
-print('arrNegatif: ', arrNegatif)
 print('arrPositif: ', arrPositif)
-
+print('arrNegatif: ', arrNegatif)
 print('hasil sentimen score: ', hasilSentimen)
