@@ -1,9 +1,11 @@
 # -------------komentar-------------
 # untuk coba coba lib
 
-stringCoba = 'agi ganteng banget'
-cari = 'ganteng'
-if (cari in stringCoba):
-    print('ada')
-else:
-    print('gada')
+def returnMore1Values():
+    namaDepan = 'raginda'
+    namaBelakang = 'firdaus'
+    return namaDepan, namaBelakang
+
+nDpn, nBlk = returnMore1Values()
+print(nDpn)
+print(nBlk)

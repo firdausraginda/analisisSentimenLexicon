@@ -26,16 +26,9 @@ factory = StopWordRemoverFactory()
 stopword = factory.create_stop_word_remover()
 
 # -------------global variable-------------
-punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
 # dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
 # dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
-# dataStatis = 'aku tarik napas habis, membuat orak senyum.'
-dataStatis = 'pengen marah aku teh, tapi gimana ya'
-arrPositif = []
-arrNegatif = []
-hasilNGram1 = []
-hasilNGram2 = []
-hasilNGram3 = []
+dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum.'
 
 # -------------import excel dataset-------------
 def importExcelDataSet():
@@ -57,6 +50,7 @@ def stopwordRemoval(data):
 
 # -------------punctuation removal dan case conversion-------------
 def punctuationRemoval(data):
+    punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
     hasil = []
     for kata in data:
         if kata not in punctuations:
@@ -77,43 +71,46 @@ def tokenization(data):
 
 # -------------join string n-gram all-------------
 def nGramAll(hasilPraproses):
-    nGram1(hasilPraproses)
-    nGram2(hasilPraproses)
-    nGram3(hasilPraproses)
+    hasilNGram1 = nGram1(hasilPraproses)
+    hasilNGram2 = nGram2(hasilPraproses)
+    hasilNGram3 = nGram3(hasilPraproses)
+    return hasilNGram1, hasilNGram2, hasilNGram3
 
 # -------------join string n-gram = 1-------------
 def nGram1(hasilPraproses):
-    global hasilNGram1
-    
-    hasilNGram1 = hasilPraproses
+    return hasilPraproses
 
 # -------------join string n-gram = 2-------------
 def nGram2(hasilPraproses):
     tempKata = ''
-    global hasilNGram2
+    hasilNGram2 = []
 
     total = int(len(hasilPraproses))
 
     for i in range(0, total):
         if (i == total-1):
-            return
+            return hasilNGram2
         else:
             tempKata = hasilPraproses[i] + ' ' + hasilPraproses[i+1]
             hasilNGram2.append(tempKata)
+    
+    return hasilNGram2
 
 # -------------join string n-gram = 3-------------
 def nGram3(hasilPraproses):
     tempKata = ''
-    global hasilNGram3
+    hasilNGram3 = []
 
     total = int(len(hasilPraproses))
 
     for j in range(0, total):
         if (j == total-2):
-            return
+            return hasilNGram3
         else:
             tempKata = hasilPraproses[j] + ' ' + hasilPraproses[j+1] + ' ' + hasilPraproses[j+2] 
             hasilNGram3.append(tempKata)
+   
+    return hasilNGram3
 
 # -------------cari senti word-------------
 def cariSentiWord(param1, param2, param3):
@@ -121,7 +118,8 @@ def cariSentiWord(param1, param2, param3):
     arrNegatifNGram3 = []
     arrPositifNGram2 = []
     arrNegatifNGram2 = []
-    global arrPositif
+    arrPositif = []
+    arrNegatif = []
 
     # cari sentiword dgn n-gram = 3
     for kata in param3:
@@ -207,20 +205,27 @@ def cariSentiWord(param1, param2, param3):
         arrPositif.append(kata)
     for kata in arrNegatifNGram3:
         arrNegatif.append(kata)
+    
+    print('arrPositif: ', arrPositif)
+    print('arrNegatif: ', arrNegatif)
+    
+    return arrPositif, arrNegatif
 
 # -------------itung sentiment score-------------
-def sentimentScore():
-    global arrPositif
-    global arrNegatif
+def sentimentScore(hasilPositif, hasilNegatif):
     countPositif = 0
     countNegatif = 0
-    for arr in arrPositif:
+    
+    for arr in hasilPositif:
         countPositif = countPositif + arr[1]
-    for arr in arrNegatif:
+    for arr in hasilNegatif:
         countNegatif = countNegatif + arr[1]
-    print('countNegatif: ', countNegatif)
+
     print('countPositif: ', countPositif)
+    print('countNegatif: ', countNegatif)
+
     sentimentScore = countNegatif + countPositif
+ 
     return sentimentScore
 
 # -------------main program-------------
@@ -232,10 +237,8 @@ hasilPraprosesCoding = hasilStopWord
 
 print('hasil praposes: ', hasilPraprosesCoding)
 
-nGramAll(hasilPraprosesCoding)
-cariSentiWord(hasilNGram1, hasilNGram2, hasilNGram3)
-hasilSentimen = sentimentScore()
+hasilNGram1, hasilNGram2, hasilNGram3 = nGramAll(hasilPraprosesCoding)
+hasilPositif, hasilNegatif = cariSentiWord(hasilNGram1, hasilNGram2, hasilNGram3)
+hasilSentimen = sentimentScore(hasilPositif, hasilNegatif)
 
-print('arrPositif: ', arrPositif)
-print('arrNegatif: ', arrNegatif)
 print('hasil sentimen score: ', hasilSentimen)
