@@ -2,9 +2,9 @@
 
 # import excel
 from openpyxl import load_workbook
-dataset = load_workbook('./dataset_TA/coba.xlsx')
+dataset = load_workbook('../dataset_TA/coba.xlsx')
 sheet1 = dataset['Sheet1']
-dataset = load_workbook('../inset lexicon/InSet-Lexicon/inset.xlsx')
+dataset = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = dataset['negatif']
 positif = dataset['positif']
 

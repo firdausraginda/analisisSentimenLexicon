@@ -1,9 +1,8 @@
-from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
-factory = StopWordRemoverFactory()
-stopword = factory.create_stop_word_remover()
+myList = ['agi', 'ganteng', 'banget', 'aduh', 'ga', 'tahan']
+hapus = ['ganteng', 'ga']
+print(myList)
 
-data = 'semangat pak, cara mengajarnya memotivasi, memberikan hadiah bagi yang nilainya 100, tapi kadang saya merasa bapak menjelaskannya terlalu cepat, atau mungkin karena durasi perkuliahannya yang hanya 2 jam yaa.'
-
-hasil = stopword.remove(data.lower())
-
-print(hasil)
+for kata in hapus:
+    myList.remove(kata)
+    
+print(myList)
