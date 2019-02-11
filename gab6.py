@@ -37,9 +37,11 @@ dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk
 # -------------import excel dataset-------------
 def importExcelDataSet():
     hasil = []
-    for i in range(2,71):
+    labelManual = []
+    for i in range(2, 48):
         hasil.append(sheet1.cell(row=i, column=7).value)
-    return hasil
+        labelManual.append(sheet1.cell(row=i, column=8).value)
+    return hasil, labelManual
 
 # -------------stopword removal-------------
 def stopwordRemoval(data):
@@ -288,32 +290,65 @@ def sentimentScore(hasilPositif, hasilNegatif):
  
     return sentimentScore
 
+# -------------cek sentimen-------------
+def cekSentimen(nilaiSentimen):
+    hasil = ''
+    if (nilaiSentimen > 0):
+        hasil = 'positif'
+    elif (nilaiSentimen < 0):
+        hasil = 'negatif'
+    elif (nilaiSentimen == 0):
+        hasil = 'netral'
+    
+    return hasil
+
+# -------------looping hasil program-------------
+def loopHasilProgram(hasilProgram):
+    idx = 0
+    for data in hasilProgram:
+        idx += 1
+        print('hasil ke-', idx, ': ', data)
+
+# -------------itung akurasi sistem-------------
+def akurasiSistem():
+    jmlData = int(len(hasilImport))
+    countTrue = 0
+    hasil = 0
+
+    for i in range(0, jmlData):
+        if (hasilLabelManual[i] == hasilLoop[i][2]):
+            countTrue += 1
+
+    hasil = (countTrue / jmlData)*100
+    return hasil
+
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport = importExcelDataSet()
+hasilImport, hasilLabelManual = importExcelDataSet()
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
     ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
     hasilStem = stemmingWord(ngram1)
     hasilNoPuct = punctuationRemoval(hasilStem)
-    hasilStopWord = stopwordRemoval(hasilNoPuct)
-    hasilPraprosesCoding = hasilStopWord
+    # hasilStopWord = stopwordRemoval(hasilNoPuct)
+    hasilPraprosesCoding = hasilNoPuct
     
     print('kalimat lengkap : ', dataDinamis)
     print('hasil praposes: ', hasilPraprosesCoding)
 
     hasilPositif, hasilNegatif = sentiWordAfterStem(hasilPraprosesCoding, ngramPositif, ngramNegatif)
     hasilSentimen = sentimentScore(hasilPositif, hasilNegatif)
-    
-    hasilLoop.append([dataDinamis,hasilSentimen])
+    hasilCekSentimen = cekSentimen(hasilSentimen)
+    hasilLoop.append([dataDinamis, hasilSentimen, hasilCekSentimen])
 
     print('hasil sentimen score: ', hasilSentimen)
     print('-----------------------------')
 
-print('-------------HASIL PROGRAM-------------')
-idx = 0
-for data in hasilLoop:
-    idx += 1
-    print('hasil ke-', idx, ': ', data)
+print('-------------LOOPING HASIL PROGRAM-------------')
+loopHasilProgram(hasilLoop)
+
+print('-------------AKURASI SISTEM-------------')
+hasilAkurasi = akurasiSistem()
+print('akurasi sistem: ', hasilAkurasi)

@@ -1,12 +1,8 @@
 # -------------komentar-------------
 # untuk coba coba lib
 
-from nltk.tokenize import sent_tokenize, word_tokenize
+from stop_words import get_stop_words
 
-from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-factory = StemmerFactory()
-stemmer = factory.create_stemmer()
+stop_words = get_stop_words('indonesian')
 
-# kata = 'menyapu-nyapu lantai dengan sapu, seolah-olah semangatku berkobar-kobar'
-kata = 'seharusnya setidaknya'
-print(stemmer.stem(kata))
+print(stop_words)
