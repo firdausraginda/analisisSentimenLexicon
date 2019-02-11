@@ -332,8 +332,8 @@ for dataDinamis in hasilImport:
     ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
     hasilStem = stemmingWord(ngram1)
     hasilNoPuct = punctuationRemoval(hasilStem)
-    # hasilStopWord = stopwordRemoval(hasilNoPuct)
-    hasilPraprosesCoding = hasilNoPuct
+    hasilStopWord = stopwordRemoval(hasilNoPuct)
+    hasilPraprosesCoding = hasilStopWord
     
     print('kalimat lengkap : ', dataDinamis)
     print('hasil praposes: ', hasilPraprosesCoding)
