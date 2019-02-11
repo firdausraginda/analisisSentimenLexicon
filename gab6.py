@@ -2,7 +2,7 @@
 # *sudah bisa handle n-gram = 2 dan 3
 # *sudah bisa handle n-gram = 2 dan 3 yg bukan kata dasar
 # *sudah bisa handle kata yg di pisah dgn strip misal = tercengang-cengang
-# *belum looping smua dataset
+# *sudah bisa looping smua dataset
 
 # -------------register lib-------------
 # import excel
@@ -37,7 +37,7 @@ dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk
 # -------------import excel dataset-------------
 def importExcelDataSet():
     hasil = []
-    for i in range(2,7):
+    for i in range(2,71):
         hasil.append(sheet1.cell(row=i, column=7).value)
     return hasil
 
@@ -289,16 +289,31 @@ def sentimentScore(hasilPositif, hasilNegatif):
     return sentimentScore
 
 # -------------main program-------------
-hasilToken = tokenization(dataStatis)
-ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
-hasilStem = stemmingWord(ngram1)
-hasilNoPuct = punctuationRemoval(hasilStem)
-hasilStopWord = stopwordRemoval(hasilNoPuct)
-hasilPraprosesCoding = hasilStopWord
+hasilLoop = []
 
-print('hasil praposes: ', hasilPraprosesCoding)
+hasilImport = importExcelDataSet()
 
-hasilPositif, hasilNegatif = sentiWordAfterStem(hasilPraprosesCoding, ngramPositif, ngramNegatif)
-hasilSentimen = sentimentScore(hasilPositif, hasilNegatif)
+for dataDinamis in hasilImport:
+    hasilToken = tokenization(dataDinamis)
+    ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
+    hasilStem = stemmingWord(ngram1)
+    hasilNoPuct = punctuationRemoval(hasilStem)
+    hasilStopWord = stopwordRemoval(hasilNoPuct)
+    hasilPraprosesCoding = hasilStopWord
+    
+    print('kalimat lengkap : ', dataDinamis)
+    print('hasil praposes: ', hasilPraprosesCoding)
 
-print('hasil sentimen score: ', hasilSentimen)
+    hasilPositif, hasilNegatif = sentiWordAfterStem(hasilPraprosesCoding, ngramPositif, ngramNegatif)
+    hasilSentimen = sentimentScore(hasilPositif, hasilNegatif)
+    
+    hasilLoop.append([dataDinamis,hasilSentimen])
+
+    print('hasil sentimen score: ', hasilSentimen)
+    print('-----------------------------')
+
+print('-------------HASIL PROGRAM-------------')
+idx = 0
+for data in hasilLoop:
+    idx += 1
+    print('hasil ke-', idx, ': ', data)

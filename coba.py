@@ -7,12 +7,6 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 factory = StemmerFactory()
 stemmer = factory.create_stemmer()
 
-kata = 'menyapu-nyapu lantai dengan sapu, seolah-olah semangatku berkobar-kobar'
-
-hasilToken = word_tokenize(kata)
-
-# print(hasilToken)
-
-for kata in hasilToken:
-    if ('-' in kata):
-        print(kata)
+# kata = 'menyapu-nyapu lantai dengan sapu, seolah-olah semangatku berkobar-kobar'
+kata = 'seharusnya setidaknya'
+print(stemmer.stem(kata))
