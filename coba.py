@@ -1,18 +1,18 @@
 # -------------komentar-------------
 # untuk coba coba lib
 
-tokenTemp = ['jalan', 'bebas', 'hambat']
-hasilNGram1 = ['aku', 'jalan', 'bebas', 'hambat', 'hambat', 'tarik', 'napas', 'habis', 'buat', 'orak', 'senyum', 'jalan']
-hasilNGram2 = ['aku jalan', 'jalan bebas', 'bebas hambat', 'hambat tarik', 'tarik napas', 'napas habis', 'habis buat', 'buat orak', 'orak senyum', 'senyum jalan']
+from nltk.tokenize import sent_tokenize, word_tokenize
 
-for kata in tokenTemp:
-    for kataParam in hasilNGram1:
-        if kataParam == kata:
-            hasilNGram1.remove(kataParam)
-            break
-    for kataParam in hasilNGram2:
-        if kataParam == kata:
-            hasilNGram2.remove(kataParam)
-            break
+from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+factory = StemmerFactory()
+stemmer = factory.create_stemmer()
 
-print(hasilNGram1)
+kata = 'menyapu-nyapu lantai dengan sapu, seolah-olah semangatku berkobar-kobar'
+
+hasilToken = word_tokenize(kata)
+
+# print(hasilToken)
+
+for kata in hasilToken:
+    if ('-' in kata):
+        print(kata)
