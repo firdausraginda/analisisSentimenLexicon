@@ -54,22 +54,22 @@ def stopwordRemoval(data):
     nonStopWord = ['tidak']
     
     # default dari stopword sastrawi
-    # for kata in data:
-    #     hasil.append(stopword.remove(kata))
-    # for kata in hasil:
-    #     if kata != '':
-    #         hasilBersih.append(kata) 
+    for kata in data:
+        hasil.append(stopword.remove(kata))
+    for kata in hasil:
+        if kata != '':
+            hasilBersih.append(kata) 
 
     # custom stopword
-    isiStopWord = getStopWord
-    for isi in isiStopWord:
-        if isi not in nonStopWord:
-            stopwordCustom.append(isi)
-    for kata in data:
-        if kata not in stopwordCustom:
-            hasil.append(kata)
+    # isiStopWord = getStopWord
+    # for isi in isiStopWord:
+    #     if isi not in nonStopWord:
+    #         stopwordCustom.append(isi)
+    # for kata in data:
+    #     if kata not in stopwordCustom:
+    #         hasil.append(kata)
 
-    return hasil
+    return hasilBersih
 
 # -------------punctuation removal dan case conversion-------------
 def punctuationRemoval(data):
@@ -331,13 +331,16 @@ def akurasiSistem():
     jmlData = int(len(hasilImport))
     countTrue = 0
     hasil = 0
+    yangSalah = []
 
     for i in range(0, jmlData):
         if (hasilLabelManual[i] == hasilLoop[i][2]):
             countTrue += 1
+        elif (hasilLabelManual[i] != hasilLoop[i][2]):
+            yangSalah.append(hasilLoop[i])
 
     hasil = (countTrue / jmlData)*100
-    return hasil
+    return hasil, yangSalah
 
 # -------------main program-------------
 hasilLoop = []
@@ -367,5 +370,6 @@ print('-------------LOOPING HASIL PROGRAM-------------')
 loopHasilProgram(hasilLoop)
 
 print('-------------AKURASI SISTEM-------------')
-hasilAkurasi = akurasiSistem()
+hasilAkurasi, dataSalahKlasifikasi = akurasiSistem()
 print('akurasi sistem: ', hasilAkurasi)
+print('data yg salah di klasifikasi: ', dataSalahKlasifikasi)

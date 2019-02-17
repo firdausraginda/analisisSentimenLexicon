@@ -17,7 +17,7 @@ stopword = factory.create_stop_word_remover()
 
 # -------------2. global variable-------------
 punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
-data = 'Pak andit kalau mengajar bicaranya cepat sekali jadi sulit untuk memahami materi pelajaran dikelas. Lebih baik saat mengajar jangan terlalu cepat karena materinya sulit dan akan lebih sulit untuk dipahami yang jika penjelasannya terlalu cepat yang.'
+data = 'bapa ngajarnya kecepetan, kadang ga kedengeran, coba di pelankan lagi pa.'
 
 # -------------3. stopword removal dan case conversion-------------
 def stopwordRemoval(data):
