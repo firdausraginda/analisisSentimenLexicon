@@ -2,7 +2,7 @@
 # *sudah bisa handle n-gram = 2 dan 3
 # *sudah bisa handle n-gram = 2 dan 3 yg bukan kata dasar
 # *sudah bisa handle kata yg di pisah dgn strip misal = tercengang-cengang
-# *belum looping smua dataset
+# *data set digabungin jadi satu record data, jadi ga perlu looping
 
 # -------------register lib-------------
 # import excel
@@ -33,13 +33,13 @@ stopword = factory.create_stop_word_remover()
 # dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
 # dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
 # dataStatis = 'menyapu-nyapu lantai dengan sapu, seolah-olah semangatku berkobar-kobar untuk menyapu-nyapu kobar'
-dataStatis = 'semua pergi dilakukan untuk mencari pasangan.. hidup lagi'
+dataStatis = 'semua pergi dilakukan untuk mencari pasangan hidup lagi'
 
 # -------------import excel dataset-------------
 def importExcelDataSet():
-    hasil = []
-    for i in range(2,7):
-        hasil.append(sheet1.cell(row=i, column=7).value)
+    hasil = ''
+    for i in range(2,48):
+        hasil = hasil + sheet1.cell(row=i, column=7).value + '. '
     return hasil
 
 # -------------stopword removal-------------
@@ -290,12 +290,14 @@ def sentimentScore(hasilPositif, hasilNegatif):
     return sentimentScore
 
 # -------------main program-------------
-hasilToken = tokenization(dataStatis)
+hasilImport = importExcelDataSet()
+
+hasilToken = tokenization(hasilImport)
 ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
 hasilStem = stemmingWord(ngram1)
 hasilNoPuct = punctuationRemoval(hasilStem)
-hasilStopWord = stopwordRemoval(hasilNoPuct)
-hasilPraprosesCoding = hasilStopWord
+# hasilStopWord = stopwordRemoval(hasilNoPuct)
+hasilPraprosesCoding = hasilNoPuct
 
 print('hasil praposes: ', hasilPraprosesCoding)
 

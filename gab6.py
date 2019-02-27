@@ -313,14 +313,16 @@ def loopHasilProgram(hasilProgram):
 def akurasiSistem():
     jmlData = int(len(hasilImport))
     countTrue = 0
-    hasil = 0
+    countNilaiTotal = 0
+    akurasi = 0
 
     for i in range(0, jmlData):
         if (hasilLabelManual[i] == hasilLoop[i][2]):
             countTrue += 1
+        countNilaiTotal = countNilaiTotal + hasilLoop[i][1]
 
-    hasil = (countTrue / jmlData)*100
-    return hasil
+    akurasi = (countTrue / jmlData)*100
+    return akurasi, countNilaiTotal
 
 # -------------main program-------------
 hasilLoop = []
@@ -332,8 +334,8 @@ for dataDinamis in hasilImport:
     ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
     hasilStem = stemmingWord(ngram1)
     hasilNoPuct = punctuationRemoval(hasilStem)
-    hasilStopWord = stopwordRemoval(hasilNoPuct)
-    hasilPraprosesCoding = hasilStopWord
+    # hasilStopWord = stopwordRemoval(hasilNoPuct)
+    hasilPraprosesCoding = hasilNoPuct
     
     print('kalimat lengkap : ', dataDinamis)
     print('hasil praposes: ', hasilPraprosesCoding)
@@ -350,5 +352,6 @@ print('-------------LOOPING HASIL PROGRAM-------------')
 loopHasilProgram(hasilLoop)
 
 print('-------------AKURASI SISTEM-------------')
-hasilAkurasi = akurasiSistem()
+hasilAkurasi, hasilTotal = akurasiSistem()
 print('akurasi sistem: ', hasilAkurasi)
+print('sentiment score total: ', hasilTotal)
