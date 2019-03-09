@@ -1,17 +1,18 @@
-# -------------komentar-------------
-# untuk coba coba lib
+from openpyxl import load_workbook
+dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx')
+ai_sjn = dataset['AI-SJN']
 
-from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
-factory = StopWordRemoverFactory()
-stopword = factory.create_stop_word_remover()
-getStopWord = factory.get_stop_words()
+def importExcelDataSet():
+    hasil = []
+    labelManual = []
+    for i in range(2, 100):
+        if (ai_sjn.cell(row=i, column=7).value == None):
+            break
+        else:
+            hasil.append(ai_sjn.cell(row=i, column=7).value)
+            labelManual.append(ai_sjn.cell(row=i, column=8).value)
+    return hasil, labelManual
 
-print(getStopWord)
+a, b = importExcelDataSet()
 
-data = ['agi', 'yang', 'ganteng', 'itu', 'ada', 'aduh', 'tidak', 'tahan', 'tidak', 'yang', 'itu']
-hasil = []
-
-for kata in data:
-    hasil.append(stopword.remove(kata))
-
-# print(hasil)
+print(a)

@@ -7,8 +7,11 @@
 # -------------register lib-------------
 # import excel
 from openpyxl import load_workbook
-dataset = load_workbook('../dataset_TA/coba.xlsx')
-sheet1 = dataset['Sheet1']
+# dataset = load_workbook('../dataset_TA/coba.xlsx')
+# sheet1 = dataset['Sheet1']
+dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx')
+sheet1 = dataset['AI-SJN']
+
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
 positif = inSetLexicon['positif']
@@ -38,7 +41,7 @@ dataStatis = 'semua pergi dilakukan untuk mencari pasangan hidup lagi'
 # -------------import excel dataset-------------
 def importExcelDataSet():
     hasil = ''
-    for i in range(2,48):
+    for i in range(2, 91):
         hasil = hasil + sheet1.cell(row=i, column=7).value + '. '
     return hasil
 

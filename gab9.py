@@ -3,15 +3,23 @@
 # *sudah bisa handle n-gram = 2 dan 3 yg bukan kata dasar
 # *sudah bisa handle kata yg di pisah dgn strip misal = tercengang-cengang
 # *sudah bisa looping smua dataset
+# *dataset matkul AI semua dosen
 
 # -------------register lib-------------
 # import excel
 from openpyxl import load_workbook
-# dataset = load_workbook('../dataset_TA/coba.xlsx')
-# sheet1 = dataset['Sheet1']
 dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx')
-sheet1 = dataset['AI-SJN']
-
+ai_sjn = dataset['AI-SJN']
+ai_adf = dataset['AI-ADF']
+ai_suo = dataset['AI-SUO']
+ai_unw = dataset['AI-UNW']
+ai_dqu = dataset['AI-DQU']
+ai_knr = dataset['AI-KNR']
+ai_hiw = dataset['AI-HIW']
+ai_zka = dataset['AI-ZKA']
+ai_jdn = dataset['AI-JDN']
+ai_vir = dataset['AI-VIR']
+ai_phg = dataset['AI-PHG']
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
 positif = inSetLexicon['positif']
@@ -41,9 +49,12 @@ dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk
 def importExcelDataSet():
     hasil = []
     labelManual = []
-    for i in range(2, 91):
-        hasil.append(sheet1.cell(row=i, column=7).value)
-        labelManual.append(sheet1.cell(row=i, column=8).value)
+    for i in range(2, 100):
+        if (ai_unw.cell(row=i, column=7).value == None):
+            break
+        else:
+            hasil.append(ai_unw.cell(row=i, column=7).value)
+            labelManual.append(ai_unw.cell(row=i, column=8).value)
     return hasil, labelManual
 
 # -------------stopword removal-------------
@@ -318,14 +329,17 @@ def akurasiSistem():
     countTrue = 0
     countNilaiTotal = 0
     akurasi = 0
+    arraySalah = []
 
     for i in range(0, jmlData):
         if (hasilLabelManual[i] == hasilLoop[i][2]):
             countTrue += 1
+        else:
+            arraySalah.append(hasilLoop[i])
         countNilaiTotal = countNilaiTotal + hasilLoop[i][1]
 
     akurasi = (countTrue / jmlData)*100
-    return akurasi, countNilaiTotal
+    return akurasi, countNilaiTotal, arraySalah
 
 # -------------main program-------------
 hasilLoop = []
@@ -355,6 +369,9 @@ print('-------------LOOPING HASIL PROGRAM-------------')
 loopHasilProgram(hasilLoop)
 
 print('-------------AKURASI SISTEM-------------')
-hasilAkurasi, hasilTotal = akurasiSistem()
+hasilAkurasi, hasilTotal, hasilSalah = akurasiSistem()
 print('akurasi sistem: ', hasilAkurasi)
 print('sentiment score total: ', hasilTotal)
+
+print('-------------HASIL YANG SALAH-------------')
+loopHasilProgram(hasilSalah)
