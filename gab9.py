@@ -4,6 +4,7 @@
 # *sudah bisa handle kata yg di pisah dgn strip misal = tercengang-cengang
 # *sudah bisa looping smua dataset
 # *dataset matkul AI semua dosen
+# *buat lexicon baru
 
 # -------------register lib-------------
 # import excel
@@ -37,6 +38,9 @@ from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFacto
 factory = StopWordRemoverFactory()
 stopword = factory.create_stop_word_remover()
 
+#import custom lexicon
+from lexiconCustom import lexCustom
+
 # -------------global variable-------------
 dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
 # dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
@@ -50,11 +54,11 @@ def importExcelDataSet():
     hasil = []
     labelManual = []
     for i in range(2, 100):
-        if (ai_unw.cell(row=i, column=7).value == None):
+        if (ai_knr.cell(row=i, column=7).value == None):
             break
         else:
-            hasil.append(ai_unw.cell(row=i, column=7).value)
-            labelManual.append(ai_unw.cell(row=i, column=8).value)
+            hasil.append(ai_knr.cell(row=i, column=7).value)
+            labelManual.append(ai_knr.cell(row=i, column=8).value)
     return hasil, labelManual
 
 # -------------stopword removal-------------
@@ -74,7 +78,7 @@ def punctuationRemoval(data):
     hasil = []
     for kata in data:
         if kata not in punctuations:
-            hasil.append(kata.lower())
+            hasil.append(kata)
     return hasil
 
 # -------------stemming-------------
@@ -86,7 +90,7 @@ def stemmingWord(data):
 
 # -------------tokenisasi-------------
 def tokenization(data):
-    hasil = word_tokenize(data)
+    hasil = word_tokenize(data.lower())
     return hasil
 
 # -------------join string n-gram all-------------
@@ -172,7 +176,7 @@ def sentiWordBeforeStem(hasilToken):
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
                         break
-                            
+
     if (len(arrNegatifNGram3) > 0):
         for kata in arrNegatifNGram3:
             token_temp = (word_tokenize(kata[0]))
@@ -185,6 +189,14 @@ def sentiWordBeforeStem(hasilToken):
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
                         break
+
+    # cari sentiword di lexicon custom dgn n-gram = 2
+    for kata in hasilNGram2:
+        for i in range(0, len(lexCustom)):
+            if (kata == lexCustom[i][0]):
+                sentiWordPositif = lexCustom[i][0]
+                weightPositif = lexCustom[i][1]
+                arrPositifNGram2.append([sentiWordPositif,weightPositif])
 
     # cari sentiword dgn n-gram = 2
     for kata in hasilNGram2:
@@ -217,6 +229,14 @@ def sentiWordBeforeStem(hasilToken):
                         hasilNGram1.remove(kataParam)
                         break
     
+    # cari sentiword di lexicon custom dgn n-gram = 1
+    for kata in hasilNGram1:
+        for i in range(0, len(lexCustom)):
+            if (kata == lexCustom[i][0]):
+                sentiWordPositif = lexCustom[i][0]
+                weightPositif = lexCustom[i][1]
+                arrPositifNGram1Strip.append([sentiWordPositif,weightPositif])
+
     # cari sentiword dgn n-gram = 1 yang pake strip, misal = 'berkobar-kobar'
     for kata in hasilNGram1:
         if ('-' in kata):

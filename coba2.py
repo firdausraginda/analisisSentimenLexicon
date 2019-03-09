@@ -1,4 +1,7 @@
 from openpyxl import load_workbook
+from lexiconCustom import lexCustom
+from nltk.tokenize import sent_tokenize, word_tokenize
+
 dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx')
 ai_sjn = dataset['AI-SJN']
 
@@ -15,4 +18,13 @@ def importExcelDataSet():
 
 a, b = importExcelDataSet()
 
-print(a)
+# print(a)
+
+# for data in lexCustom:
+#     print(data[0])
+
+from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
+
+factory = StopWordRemoverFactory()
+stopwords = factory.get_stop_words()
+print(stopwords)
