@@ -27,4 +27,12 @@ from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFacto
 
 factory = StopWordRemoverFactory()
 stopwords = factory.get_stop_words()
-print(stopwords)
+# print(stopwords)
+
+arrA = ['agi', 'bio', 'abdan']
+arrB = ['a ido', 'akang']
+
+for kata in arrA:
+    arrB.append(kata)
+
+print(arrB)
