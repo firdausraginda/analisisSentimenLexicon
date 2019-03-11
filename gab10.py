@@ -10,7 +10,7 @@
 # -------------register lib-------------
 # import excel
 from openpyxl import load_workbook
-dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx')
+dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx', data_only=True)
 ai_sjn = dataset['AI-SJN']
 ai_adf = dataset['AI-ADF']
 ai_suo = dataset['AI-SUO']
@@ -57,12 +57,12 @@ def importExcelDataSet():
     labelManual = []
 
     for selectSheet in dataAI:
-        for i in range(2, 100):
+        for i in range(2, 105):
             if (selectSheet.cell(row=i, column=7).value == None):
                 break
             else:
                 hasil.append(selectSheet.cell(row=i, column=7).value)
-                labelManual.append(selectSheet.cell(row=i, column=8).value)
+                labelManual.append(selectSheet.cell(row=i, column=11).value)
 
     return hasil, labelManual
 
