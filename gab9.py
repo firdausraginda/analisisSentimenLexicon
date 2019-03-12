@@ -53,12 +53,12 @@ dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk
 def importExcelDataSet():
     hasil = []
     labelManual = []
-    for i in range(2, 100):
-        if (ai_knr.cell(row=i, column=7).value == None):
+    for i in range(2, 105):
+        if (ai_sjn.cell(row=i, column=7).value == None):
             break
         else:
-            hasil.append(ai_knr.cell(row=i, column=7).value)
-            labelManual.append(ai_knr.cell(row=i, column=8).value)
+            hasil.append(ai_sjn.cell(row=i, column=7).value)
+            labelManual.append(ai_sjn.cell(row=i, column=11).value)
     return hasil, labelManual
 
 # -------------stopword removal-------------
