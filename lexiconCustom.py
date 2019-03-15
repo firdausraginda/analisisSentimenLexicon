@@ -3,3 +3,4 @@ lexCustom = [['saya', 0], ['tidak ada', 0], ['ga ada', 0], ['yang', 0], ['pa', 0
 # ga ada = tidak ada
 # sangat baik = +2 dan +2
 # sangat baik = sangat bagus
+

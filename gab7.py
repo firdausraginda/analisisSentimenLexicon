@@ -48,28 +48,28 @@ def importExcelDataSet():
 # -------------stopword removal-------------
 def stopwordRemoval(data):
     hasil = []
-    hasilBersih = []
+    # hasilBersih = []
     stopwordCustom = []
-    # nonStopWord = ['tidak', 'sementara', 'boleh', 'nggak', 'harus', 'amat', 'supaya', 'agar']
-    nonStopWord = ['tidak']
+    nonStopWord = ['tidak', 'sementara', 'boleh', 'nggak', 'harus', 'amat', 'supaya', 'agar']
+    # nonStopWord = ['tidak']
     
     # default dari stopword sastrawi
-    for kata in data:
-        hasil.append(stopword.remove(kata))
-    for kata in hasil:
-        if kata != '':
-            hasilBersih.append(kata) 
+    # for kata in data:
+    #     hasil.append(stopword.remove(kata))
+    # for kata in hasil:
+    #     if kata != '':
+    #         hasilBersih.append(kata) 
 
     # custom stopword
-    # isiStopWord = getStopWord
-    # for isi in isiStopWord:
-    #     if isi not in nonStopWord:
-    #         stopwordCustom.append(isi)
-    # for kata in data:
-    #     if kata not in stopwordCustom:
-    #         hasil.append(kata)
+    isiStopWord = getStopWord
+    for isi in isiStopWord:
+        if isi not in nonStopWord:
+            stopwordCustom.append(isi)
+    for kata in data:
+        if kata not in stopwordCustom:
+            hasil.append(kata)
 
-    return hasilBersih
+    return hasil
 
 # -------------punctuation removal dan case conversion-------------
 def punctuationRemoval(data):

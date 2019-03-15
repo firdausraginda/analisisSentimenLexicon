@@ -2,18 +2,29 @@
 # *sudah bisa handle n-gram = 2 dan 3
 # *sudah bisa handle n-gram = 2 dan 3 yg bukan kata dasar
 # *sudah bisa handle kata yg di pisah dgn strip misal = tercengang-cengang
-# *data set digabungin jadi satu record data, jadi ga perlu looping
-# *dataset matkul AI per satu dosen
+# *sudah bisa looping smua dataset
+# *dataset matkul AI semua dosen
 # *buat lexicon baru
+# *looping semua data AI
+# *untuk ngitung akurasi, precision, recall, f-measure lvl dokumen seluruh dokumen
 
 # -------------register lib-------------
 # import excel
 from openpyxl import load_workbook
-# dataset = load_workbook('../dataset_TA/coba.xlsx')
-# sheet1 = dataset['Sheet1']
 dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx', data_only=True)
-sheet1 = dataset['AI-PHG']
-
+ai_sjn = dataset['AI-SJN']
+ai_adf = dataset['AI-ADF']
+ai_suo = dataset['AI-SUO']
+ai_unw = dataset['AI-UNW']
+ai_dqu = dataset['AI-DQU']
+ai_knr = dataset['AI-KNR']
+ai_hiw = dataset['AI-HIW']
+ai_zka = dataset['AI-ZKA']
+ai_jdn = dataset['AI-JDN']
+ai_vir = dataset['AI-VIR']
+ai_phg = dataset['AI-PHG']
+dataAI = [ai_phg]
+# dataAI = [ai_sjn, ai_adf, ai_suo, ai_unw, ai_dqu, ai_knr, ai_hiw, ai_zka, ai_jdn, ai_vir, ai_phg]
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
 positif = inSetLexicon['positif']
@@ -34,25 +45,20 @@ stopword = factory.create_stop_word_remover()
 #import custom lexicon
 from lexiconCustom import lexCustom
 
-# -------------global variable-------------
-# dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
-# dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
-# dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
-# dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
-# dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
-# dataStatis = 'menyapu-nyapu lantai dengan sapu, seolah-olah semangatku berkobar-kobar untuk menyapu-nyapu kobar'
-dataStatis = 'semua pergi dilakukan untuk mencari pasangan hidup lagi'
-
 # -------------import excel dataset-------------
 def importExcelDataSet():
-    hasil = ''
+    hasil = []
+    labelManual = []
 
-    for i in range(2, 105):
-        if (sheet1.cell(row=i, column=7).value == None):
-            break
-        else:
-            hasil = hasil + sheet1.cell(row=i, column=7).value + '. '
-    return hasil
+    for selectSheet in dataAI:
+        for i in range(2, 105):
+            if (selectSheet.cell(row=i, column=7).value == None):
+                break
+            else:
+                hasil.append(selectSheet.cell(row=i, column=7).value)
+                labelManual.append(selectSheet.cell(row=i, column=11).value)
+
+    return hasil, labelManual
 
 # -------------stopword removal-------------
 def stopwordRemoval(data):
@@ -169,7 +175,7 @@ def sentiWordBeforeStem(hasilToken):
                     if kata in kataParam:
                         hasilNGram2.remove(kataParam)
                         break
-                            
+
     if (len(arrNegatifNGram3) > 0):
         for kata in arrNegatifNGram3:
             token_temp = (word_tokenize(kata[0]))
@@ -317,19 +323,74 @@ def sentimentScore(hasilPositif, hasilNegatif):
  
     return sentimentScore
 
+# -------------cek sentimen-------------
+def cekSentimen(nilaiSentimen):
+    hasil = ''
+    if (nilaiSentimen > 0):
+        hasil = 'positif'
+    elif (nilaiSentimen < 0):
+        hasil = 'negatif'
+    elif (nilaiSentimen == 0):
+        hasil = 'netral'
+    
+    return hasil
+
+# -------------looping hasil program-------------
+def loopHasilProgram(hasilProgram):
+    idx = 0
+    for data in hasilProgram:
+        idx += 1
+        print('hasil ke-', idx, ': ', data)
+
+# -------------itung akurasi sistem-------------
+def akurasiSistem():
+    jmlData = int(len(hasilImport))
+    countTrue = 0
+    countNilaiTotal = 0
+    akurasi = 0
+    arraySalah = []
+
+    for i in range(0, jmlData):
+        if (hasilLabelManual[i] == hasilLoop[i][2]):
+            countTrue += 1
+        else:
+            arraySalah.append(hasilLoop[i])
+        countNilaiTotal = countNilaiTotal + hasilLoop[i][1]
+
+    akurasi = (countTrue / jmlData)*100
+    return akurasi, countNilaiTotal, arraySalah
+
 # -------------main program-------------
-hasilImport = importExcelDataSet()
+hasilLoop = []
 
-hasilToken = tokenization(hasilImport)
-ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
-hasilStem = stemmingWord(ngram1)
-hasilNoPuct = punctuationRemoval(hasilStem)
-# hasilStopWord = stopwordRemoval(hasilNoPuct)
-hasilPraprosesCoding = hasilNoPuct
+hasilImport, hasilLabelManual = importExcelDataSet()
 
-print('hasil praposes: ', hasilPraprosesCoding)
+for dataDinamis in hasilImport:
+    hasilToken = tokenization(dataDinamis)
+    ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
+    hasilStem = stemmingWord(ngram1)
+    hasilNoPuct = punctuationRemoval(hasilStem)
+    # hasilStopWord = stopwordRemoval(hasilNoPuct)
+    hasilPraprosesCoding = hasilNoPuct
+    
+    print('kalimat lengkap : ', dataDinamis)
+    print('hasil praposes: ', hasilPraprosesCoding)
 
-hasilPositif, hasilNegatif = sentiWordAfterStem(hasilPraprosesCoding, ngramPositif, ngramNegatif)
-hasilSentimen = sentimentScore(hasilPositif, hasilNegatif)
+    hasilPositif, hasilNegatif = sentiWordAfterStem(hasilPraprosesCoding, ngramPositif, ngramNegatif)
+    hasilSentimen = sentimentScore(hasilPositif, hasilNegatif)
+    hasilCekSentimen = cekSentimen(hasilSentimen)
+    hasilLoop.append([dataDinamis, hasilSentimen, hasilCekSentimen])
 
-print('hasil sentimen score: ', hasilSentimen)
+    print('hasil sentimen score: ', hasilSentimen)
+    print('-----------------------------')
+
+print('-------------LOOPING HASIL PROGRAM-------------')
+loopHasilProgram(hasilLoop)
+
+print('-------------AKURASI SISTEM-------------')
+hasilAkurasi, hasilTotal, hasilSalah = akurasiSistem()
+print('akurasi sistem: ', hasilAkurasi)
+print('sentiment score total: ', hasilTotal)
+
+print('-------------HASIL YANG SALAH-------------')
+loopHasilProgram(hasilSalah)

@@ -5,6 +5,7 @@
 # *sudah bisa looping smua dataset
 # *dataset matkul AI semua dosen
 # *buat lexicon baru
+# *untuk ngitung akurasi, precision, recall, f-measure lvl kalimat per dokumen
 
 # -------------register lib-------------
 # import excel
@@ -41,24 +42,16 @@ stopword = factory.create_stop_word_remover()
 #import custom lexicon
 from lexiconCustom import lexCustom
 
-# -------------global variable-------------
-dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
-# dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
-# dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
-# dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
-# dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
-# dataStatis = 'menyapu-nyapu lantai dengan sapu, seolah-olah semangatku berkobar-kobar untuk menyapu-nyapu kobar'
-
 # -------------import excel dataset-------------
-def importExcelDataSet():
+def importExcelDataSet(selectedSheet):
     hasil = []
     labelManual = []
     for i in range(2, 105):
-        if (ai_vir.cell(row=i, column=7).value == None):
+        if (selectedSheet.cell(row=i, column=7).value == None):
             break
         else:
-            hasil.append(ai_vir.cell(row=i, column=7).value)
-            labelManual.append(ai_vir.cell(row=i, column=11).value)
+            hasil.append(selectedSheet.cell(row=i, column=7).value)
+            labelManual.append(selectedSheet.cell(row=i, column=11).value)
     return hasil, labelManual
 
 # -------------stopword removal-------------
@@ -343,28 +336,78 @@ def loopHasilProgram(hasilProgram):
         idx += 1
         print('hasil ke-', idx, ': ', data)
 
-# -------------itung akurasi sistem-------------
-def akurasiSistem():
+# -------------itung evaluasi sistem-------------
+def evaluasiSistem():
     jmlData = int(len(hasilImport))
-    countTrue = 0
     countNilaiTotal = 0
-    akurasi = 0
-    arraySalah = []
+
+    prePos = 0
+    preNeg = 0
+    preNet = 0
+    recPos = 0
+    recNeg = 0
+    recNet = 0
+
+    countPosPos = 0
+    countPosNeg = 0
+    countPosNet = 0
+    countNegPos = 0
+    countNegNeg = 0
+    countNegNet = 0
+    countNetPos = 0
+    countNetNeg = 0
+    countNetNet = 0
 
     for i in range(0, jmlData):
-        if (hasilLabelManual[i] == hasilLoop[i][2]):
-            countTrue += 1
-        else:
-            arraySalah.append(hasilLoop[i])
-        countNilaiTotal = countNilaiTotal + hasilLoop[i][1]
+        # positif
+        if (hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'positif'):
+            countPosPos += 1
+        elif(hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'negatif'):
+            countPosNeg += 1
+        elif(hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'netral'):
+            countPosNet += 1
+        # negatif
+        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'positif'):
+            countNegPos += 1
+        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'negatif'):
+            countNegNeg += 1
+        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'netral'):
+            countNegNet += 1
+        # netral
+        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'positif'):
+            countNetPos += 1
+        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'negatif'):
+            countNetNeg += 1
+        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'netral'):
+            countNetNet += 1
+        # total sentiment score
+        countNilaiTotal += hasilLoop[i][1]
 
-    akurasi = (countTrue / jmlData)*100
-    return akurasi, countNilaiTotal, arraySalah
+    # precision positif
+    prePos = (countPosPos / (countPosPos + countNegPos + countNetPos)) * 100
+    # precision negatif
+    preNeg = (countNegNeg / (countPosNeg + countNegNeg + countNetNeg)) * 100
+    # precision netral        
+    preNet = (countNetNet / (countPosNet + countNegNet + countNetNet)) * 100
+
+    # recall positif
+    recPos = (countPosPos / (countPosPos + countPosNeg + countPosNet)) * 100
+    # recall negatif
+    recNeg = (countNegNeg / (countNegPos + countNegNeg + countNegNet)) * 100
+    # recall netral
+    recNet = (countNetNet / (countNetPos + countNetNeg + countNetNet)) * 100
+
+    accuracy = ((countPosPos + countNegNeg + countNetNet) / (countPosPos + countNegPos + countNetPos + countPosNeg + countNegNeg + countNetNeg + countPosNet + countNegNet + countNetNet)) * 100
+    confusionMatrix = countPosPos, countNegPos, countNetPos, countPosNeg, countNegNeg, countNetNeg, countPosNet, countNegNet, countNetNet
+    precision = prePos, preNeg, preNet
+    recall = recPos, recNeg, recNet
+
+    return countNilaiTotal, confusionMatrix, accuracy, precision, recall
 
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport, hasilLabelManual = importExcelDataSet()
+hasilImport, hasilLabelManual = importExcelDataSet(ai_phg)
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
@@ -389,9 +432,12 @@ print('-------------LOOPING HASIL PROGRAM-------------')
 loopHasilProgram(hasilLoop)
 
 print('-------------AKURASI SISTEM-------------')
-hasilAkurasi, hasilTotal, hasilSalah = akurasiSistem()
-print('akurasi sistem: ', hasilAkurasi)
+hasilTotal, conMat, acc, pre, rec = evaluasiSistem()
 print('sentiment score total: ', hasilTotal)
+print('confusion matrix: ', conMat)
+print('accuracy: ', acc)
+print('precision: ', pre)
+print('recall: ', rec)
 
-print('-------------HASIL YANG SALAH-------------')
-loopHasilProgram(hasilSalah)
+# print('-------------HASIL YANG SALAH-------------')
+# loopHasilProgram(hasilSalah)

@@ -6,6 +6,7 @@
 # *dataset matkul AI semua dosen
 # *buat lexicon baru
 # *looping semua data AI
+# *untuk ngitung akurasi, precision, recall, f-measure lvl kalimat seluruh dokumen
 
 # -------------register lib-------------
 # import excel
@@ -22,7 +23,7 @@ ai_zka = dataset['AI-ZKA']
 ai_jdn = dataset['AI-JDN']
 ai_vir = dataset['AI-VIR']
 ai_phg = dataset['AI-PHG']
-dataAI = [ai_vir]
+dataAI = [ai_phg]
 # dataAI = [ai_sjn, ai_adf, ai_suo, ai_unw, ai_dqu, ai_knr, ai_hiw, ai_zka, ai_jdn, ai_vir, ai_phg]
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
@@ -43,14 +44,6 @@ stopword = factory.create_stop_word_remover()
 
 #import custom lexicon
 from lexiconCustom import lexCustom
-
-# -------------global variable-------------
-dataStatis = 'buang air kecil karena kurang pikiran, semua pergi dilakukan untuk mencari pasangan hidup, serta bersuka-sukaan.'
-# dataStatis = 'aku mencium telapak kaki ayah, sangat ingin makan bawang agar sehat.'
-# dataStatis = 'aku jalan bebas hambat, tarik napas habis, membuat orak senyum di jalan.'
-# dataStatis = 'Jangan terlalu sering memenggal lidah, suka mengganggu kita yang mau belajar suka mencium telapak kaki ayah.'
-# dataStatis = 'hati kecil buang air kecil, kecil hati, buang hati air'
-# dataStatis = 'menyapu-nyapu lantai dengan sapu, seolah-olah semangatku berkobar-kobar untuk menyapu-nyapu kobar'
 
 # -------------import excel dataset-------------
 def importExcelDataSet():
