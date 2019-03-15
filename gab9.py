@@ -340,6 +340,7 @@ def loopHasilProgram(hasilProgram):
 def evaluasiSistem():
     jmlData = int(len(hasilImport))
     countNilaiTotal = 0
+    arraySalah = []
 
     prePos = 0
     preNeg = 0
@@ -364,20 +365,26 @@ def evaluasiSistem():
             countPosPos += 1
         elif(hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'negatif'):
             countPosNeg += 1
+            arraySalah.append(hasilLoop[i])
         elif(hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'netral'):
             countPosNet += 1
+            arraySalah.append(hasilLoop[i])
         # negatif
         elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'positif'):
             countNegPos += 1
+            arraySalah.append(hasilLoop[i])
         elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'negatif'):
             countNegNeg += 1
         elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'netral'):
             countNegNet += 1
+            arraySalah.append(hasilLoop[i])
         # netral
         elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'positif'):
             countNetPos += 1
+            arraySalah.append(hasilLoop[i])
         elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'negatif'):
             countNetNeg += 1
+            arraySalah.append(hasilLoop[i])
         elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'netral'):
             countNetNet += 1
         # total sentiment score
@@ -402,7 +409,7 @@ def evaluasiSistem():
     precision = prePos, preNeg, preNet
     recall = recPos, recNeg, recNet
 
-    return countNilaiTotal, confusionMatrix, accuracy, precision, recall
+    return countNilaiTotal, confusionMatrix, accuracy, precision, recall, arraySalah
 
 # -------------main program-------------
 hasilLoop = []
@@ -432,12 +439,12 @@ print('-------------LOOPING HASIL PROGRAM-------------')
 loopHasilProgram(hasilLoop)
 
 print('-------------AKURASI SISTEM-------------')
-hasilTotal, conMat, acc, pre, rec = evaluasiSistem()
+hasilTotal, conMat, acc, pre, rec, hasilSalah = evaluasiSistem()
 print('sentiment score total: ', hasilTotal)
 print('confusion matrix: ', conMat)
 print('accuracy: ', acc)
 print('precision: ', pre)
 print('recall: ', rec)
 
-# print('-------------HASIL YANG SALAH-------------')
-# loopHasilProgram(hasilSalah)
+print('-------------HASIL YANG SALAH-------------')
+loopHasilProgram(hasilSalah)
