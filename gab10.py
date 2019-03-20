@@ -12,6 +12,7 @@
 # import excel
 from openpyxl import load_workbook
 dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx', data_only=True)
+eval_all = dataset['eval-all']
 ai_sjn = dataset['AI-SJN']
 ai_adf = dataset['AI-ADF']
 ai_suo = dataset['AI-SUO']
@@ -49,6 +50,7 @@ from lexiconCustom import lexCustom
 def importExcelDataSet(selectSheet):
     hasil = []
     labelManual = []
+    labelManual2 = []
 
     for i in range(2, 105):
         if (selectSheet.cell(row=i, column=7).value == None):
@@ -56,8 +58,11 @@ def importExcelDataSet(selectSheet):
         else:
             hasil.append(selectSheet.cell(row=i, column=7).value)
             labelManual.append(selectSheet.cell(row=i, column=11).value)
+    
+    for i in range(3, 14):
+        labelManual2.append(eval_all.cell(row=8, column=i).value)
 
-    return hasil, labelManual
+    return hasil, labelManual, labelManual2
 
 # -------------stopword removal-------------
 def stopwordRemoval(data):
@@ -353,17 +358,17 @@ def hitungPreRec(truePositif, pembagi1, pembagi2, pembagi3):
     return hasilPrecRec
 
 # -------------itung F-Measure-------------
-def itungFMeasure(pre, rec):
+def itungFMeasure(pre, rec, beta):
     hasil = None
     if (pre == 'none' or rec == 'none'):
             hasil = 'f-measure none'
     else:
-        hasil = (2*pre*rec)/(pre+rec)
+        hasil = (((beta*beta) + 1)*pre*rec)/(pre+rec)
     return hasil
 
 # -------------itung evaluasi sistem-------------
-def evaluasiSistem():
-    jmlData = int(len(hasilImport))
+def evaluasiSistem(labelManualParam, loopSistem):
+    jmlData = int(len(labelManualParam))
     countNilaiTotal = 0
     arraySalah = []
 
@@ -379,34 +384,34 @@ def evaluasiSistem():
 
     for i in range(0, jmlData):
         # positif
-        if (hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'positif'):
+        if (labelManualParam[i] == 'positif' and loopSistem[i][2] == 'positif'):
             countPosPos += 1
-        elif(hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'negatif'):
+        elif(labelManualParam[i] == 'positif' and loopSistem[i][2] == 'negatif'):
             countPosNeg += 1
-            arraySalah.append(hasilLoop[i])
-        elif(hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'netral'):
+            arraySalah.append(loopSistem[i])
+        elif(labelManualParam[i] == 'positif' and loopSistem[i][2] == 'netral'):
             countPosNet += 1
-            arraySalah.append(hasilLoop[i])
+            arraySalah.append(loopSistem[i])
         # negatif
-        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'positif'):
+        elif(labelManualParam[i] == 'negatif' and loopSistem[i][2] == 'positif'):
             countNegPos += 1
-            arraySalah.append(hasilLoop[i])
-        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'negatif'):
+            arraySalah.append(loopSistem[i])
+        elif(labelManualParam[i] == 'negatif' and loopSistem[i][2] == 'negatif'):
             countNegNeg += 1
-        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'netral'):
+        elif(labelManualParam[i] == 'negatif' and loopSistem[i][2] == 'netral'):
             countNegNet += 1
-            arraySalah.append(hasilLoop[i])
+            arraySalah.append(loopSistem[i])
         # netral
-        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'positif'):
+        elif(labelManualParam[i] == 'netral' and loopSistem[i][2] == 'positif'):
             countNetPos += 1
-            arraySalah.append(hasilLoop[i])
-        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'negatif'):
+            arraySalah.append(loopSistem[i])
+        elif(labelManualParam[i] == 'netral' and loopSistem[i][2] == 'negatif'):
             countNetNeg += 1
-            arraySalah.append(hasilLoop[i])
-        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'netral'):
+            arraySalah.append(loopSistem[i])
+        elif(labelManualParam[i] == 'netral' and loopSistem[i][2] == 'netral'):
             countNetNet += 1
         # total sentiment score
-        countNilaiTotal += hasilLoop[i][1]
+        countNilaiTotal += loopSistem[i][1]
 
     # precision positif
     prePos = hitungPreRec(countPosPos, countPosPos, countNegPos, countNetPos)
@@ -428,22 +433,24 @@ def evaluasiSistem():
     recall = recPos, recNeg, recNet
     
     # f-measure positif
-    fmPos = itungFMeasure(prePos, recPos)
+    fmPos = itungFMeasure(prePos, recPos, 1)
     # f-measure negatif
-    fmNeg = itungFMeasure(preNeg, recNeg)
+    fmNeg = itungFMeasure(preNeg, recNeg, 1)
     # f-measure netral
-    fmNet = itungFMeasure(preNet, recNet)
+    fmNet = itungFMeasure(preNet, recNet, 1)
     # f-measure semua
     fMeasure = fmPos, fmNeg, fmNet
 
     return countNilaiTotal, confusionMatrix, accuracy, precision, recall, arraySalah, fMeasure
 
 # -------------main program-------------
+hasilLoop2 = []
 
 for loopData in dataAI:
     
     hasilLoop = []
-    hasilImport, hasilLabelManual = importExcelDataSet(loopData)
+
+    hasilImport, hasilLabelManual, hasilLabelManual2 = importExcelDataSet(loopData)
 
     for dataDinamis in hasilImport:
         hasilToken = tokenization(dataDinamis)
@@ -467,14 +474,27 @@ for loopData in dataAI:
     # print('-------------LOOPING HASIL PROGRAM-------------')
     # loopHasilProgram(hasilLoop)
 
-    print('-------------AKURASI SISTEM-------------')
-    hasilTotal, conMat, acc, pre, rec, hasilSalah, fMeasure = evaluasiSistem()
-    print('accuracy: ', acc)
-    print('sentiment score total: ', hasilTotal)
-    print('confusion matrix: ', conMat)
-    print('precision: ', pre)
-    print('recall: ', rec)
-    print('F-Measure: ', fMeasure)
+    print('-------------AKURASI SISTEM LEVEL KALIMAT-------------')
+    hasilTotal, conMat, acc, pre, rec, hasilSalah, fMeasure = evaluasiSistem(hasilLabelManual, hasilLoop)
+    print('sentiment score total lvl kalimat: ', hasilTotal)
+    print('accuracy lvl kalimat: ', acc)
+    print('confusion matrix lvl kalimat: ', conMat)
+    print('precision lvl kalimat: ', pre)
+    print('recall lvl kalimat: ', rec)
+    print('F-Measure lvl kalimat: ', fMeasure)
+
+    hasilCekSentimen2 = cekSentimen(hasilTotal)
+    hasilLoop2.append([None, hasilTotal, hasilCekSentimen2])
 
     # print('-------------HASIL YANG SALAH-------------')
     # loopHasilProgram(hasilSalah)
+
+print('----------------------------------------------------')
+print('-------------AKURASI SISTEM LEVEL DOKUMEN-------------')
+hasilTotal2, conMat2, acc2, pre2, rec2, hasilSalah2, fMeasure2 = evaluasiSistem(hasilLabelManual2, hasilLoop2)
+print('sentiment score total lvl dokumen: ', hasilTotal2)
+print('accuracy lvl dokumen: ', acc2)
+print('confusion matrix lvl dokumen: ', conMat2)
+print('precision lvl dokumen: ', pre2)
+print('recall lvl dokumen: ', rec2)
+print('F-Measure lvl dokumen: ', fMeasure2)
