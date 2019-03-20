@@ -414,7 +414,7 @@ def evaluasiSistem():
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport, hasilLabelManual = importExcelDataSet(ai_phg)
+hasilImport, hasilLabelManual = importExcelDataSet(ai_suo)
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
@@ -440,9 +440,9 @@ loopHasilProgram(hasilLoop)
 
 print('-------------AKURASI SISTEM-------------')
 hasilTotal, conMat, acc, pre, rec, hasilSalah = evaluasiSistem()
+print('accuracy: ', acc)
 print('sentiment score total: ', hasilTotal)
 print('confusion matrix: ', conMat)
-print('accuracy: ', acc)
 print('precision: ', pre)
 print('recall: ', rec)
 

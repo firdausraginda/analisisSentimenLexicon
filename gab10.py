@@ -23,6 +23,7 @@ ai_zka = dataset['AI-ZKA']
 ai_jdn = dataset['AI-JDN']
 ai_vir = dataset['AI-VIR']
 ai_phg = dataset['AI-PHG']
+# dataAI = [ai_zka, ai_vir, ai_phg]
 dataAI = [ai_sjn, ai_adf, ai_suo, ai_unw, ai_dqu, ai_knr, ai_hiw, ai_zka, ai_jdn, ai_vir, ai_phg]
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
@@ -340,18 +341,31 @@ def loopHasilProgram(hasilProgram):
         idx += 1
         print('hasil ke-', idx, ': ', data)
 
+# -------------itung precision dan recall-------------
+def hitungPreRec(truePositif, pembagi1, pembagi2, pembagi3):
+    hasilPrecRec = None
+    pembagi = pembagi1 + pembagi2 + pembagi3
+    if (pembagi == 0) :
+        hasilPrecRec = 'none'
+    else:
+        hasilPrecRec = truePositif / pembagi 
+    
+    return hasilPrecRec
+
+# -------------itung F-Measure-------------
+def itungFMeasure(pre, rec):
+    hasil = None
+    if (pre == 'none' or rec == 'none'):
+            hasil = 'f-measure none'
+    else:
+        hasil = (2*pre*rec)/(pre+rec)
+    return hasil
+
 # -------------itung evaluasi sistem-------------
 def evaluasiSistem():
     jmlData = int(len(hasilImport))
     countNilaiTotal = 0
     arraySalah = []
-
-    prePos = 0
-    preNeg = 0
-    preNet = 0
-    recPos = 0
-    recNeg = 0
-    recNet = 0
 
     countPosPos = 0
     countPosNeg = 0
@@ -395,25 +409,34 @@ def evaluasiSistem():
         countNilaiTotal += hasilLoop[i][1]
 
     # precision positif
-    # prePos = (countPosPos / (countPosPos + countNegPos + countNetPos)) * 100
+    prePos = hitungPreRec(countPosPos, countPosPos, countNegPos, countNetPos)
     # precision negatif
-    # preNeg = (countNegNeg / (countPosNeg + countNegNeg + countNetNeg)) * 100
+    preNeg = hitungPreRec(countNegNeg, countPosNeg, countNegNeg, countNetNeg)
     # precision netral        
-    # preNet = (countNetNet / (countPosNet + countNegNet + countNetNet)) * 100
+    preNet = hitungPreRec(countNetNet, countPosNet, countNegNet, countNetNet)
 
     # recall positif
-    # recPos = (countPosPos / (countPosPos + countPosNeg + countPosNet)) * 100
+    recPos = hitungPreRec(countPosPos, countPosPos, countPosNeg, countPosNet)
     # recall negatif
-    # recNeg = (countNegNeg / (countNegPos + countNegNeg + countNegNet)) * 100
+    recNeg = hitungPreRec(countNegNeg, countNegPos, countNegNeg, countNegNet)
     # recall netral
-    # recNet = (countNetNet / (countNetPos + countNetNeg + countNetNet)) * 100
+    recNet = hitungPreRec(countNetNet, countNetPos, countNetNeg, countNetNet)
 
     accuracy = ((countPosPos + countNegNeg + countNetNet) / (countPosPos + countNegPos + countNetPos + countPosNeg + countNegNeg + countNetNeg + countPosNet + countNegNet + countNetNet)) * 100
     confusionMatrix = countPosPos, countNegPos, countNetPos, countPosNeg, countNegNeg, countNetNeg, countPosNet, countNegNet, countNetNet
-    # precision = prePos, preNeg, preNet
-    # recall = recPos, recNeg, recNet
+    precision = prePos, preNeg, preNet
+    recall = recPos, recNeg, recNet
+    
+    # f-measure positif
+    fmPos = itungFMeasure(prePos, recPos)
+    # f-measure negatif
+    fmNeg = itungFMeasure(preNeg, recNeg)
+    # f-measure netral
+    fmNet = itungFMeasure(preNet, recNet)
+    # f-measure semua
+    fMeasure = fmPos, fmNeg, fmNet
 
-    return countNilaiTotal, accuracy, arraySalah
+    return countNilaiTotal, confusionMatrix, accuracy, precision, recall, arraySalah, fMeasure
 
 # -------------main program-------------
 
@@ -445,9 +468,13 @@ for loopData in dataAI:
     # loopHasilProgram(hasilLoop)
 
     print('-------------AKURASI SISTEM-------------')
-    hasilTotal, hasilAkurasi, hasilSalah = evaluasiSistem()
-    print('akurasi sistem: ', hasilAkurasi)
+    hasilTotal, conMat, acc, pre, rec, hasilSalah, fMeasure = evaluasiSistem()
+    print('accuracy: ', acc)
     print('sentiment score total: ', hasilTotal)
+    print('confusion matrix: ', conMat)
+    print('precision: ', pre)
+    print('recall: ', rec)
+    print('F-Measure: ', fMeasure)
 
     # print('-------------HASIL YANG SALAH-------------')
     # loopHasilProgram(hasilSalah)
