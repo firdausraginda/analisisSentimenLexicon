@@ -361,7 +361,7 @@ def hitungPreRec(truePositif, pembagi1, pembagi2, pembagi3):
 def itungFMeasure(pre, rec, beta):
     hasil = None
     if (pre == 'none' or rec == 'none'):
-            hasil = 'f-measure none'
+            hasil = 'none'
     else:
         hasil = (((beta*beta) + 1)*pre*rec)/(pre+rec)
     return hasil
