@@ -24,7 +24,7 @@ ai_zka = dataset['AI-ZKA']
 ai_jdn = dataset['AI-JDN']
 ai_vir = dataset['AI-VIR']
 ai_phg = dataset['AI-PHG']
-# dataAI = [ai_zka, ai_vir, ai_phg]
+# dataAI = [ai_sjn, ai_adf, ai_suo, ai_unw]
 dataAI = [ai_sjn, ai_adf, ai_suo, ai_unw, ai_dqu, ai_knr, ai_hiw, ai_zka, ai_jdn, ai_vir, ai_phg]
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
@@ -59,8 +59,7 @@ def importExcelDataSet(selectSheet):
             hasil.append(selectSheet.cell(row=i, column=7).value)
             labelManual.append(selectSheet.cell(row=i, column=11).value)
     
-    for i in range(3, 14):
-        labelManual2.append(eval_all.cell(row=8, column=i).value)
+    labelManual2 = selectSheet.cell(row=2, column=16).value
 
     return hasil, labelManual, labelManual2
 
@@ -368,7 +367,7 @@ def itungFMeasure(pre, rec, beta):
 
 # -------------itung evaluasi sistem-------------
 def evaluasiSistem(labelManualParam, loopSistem):
-    jmlData = int(len(labelManualParam))
+    jmlData = int(len(loopSistem))
     countNilaiTotal = 0
     arraySalah = []
 
@@ -445,13 +444,15 @@ def evaluasiSistem(labelManualParam, loopSistem):
 
 # -------------main program-------------
 hasilLoop2 = []
+labelManualArr = []
 
 for loopData in dataAI:
     
     hasilLoop = []
-
+    
     hasilImport, hasilLabelManual, hasilLabelManual2 = importExcelDataSet(loopData)
-
+    labelManualArr.append(hasilLabelManual2)
+    
     for dataDinamis in hasilImport:
         hasilToken = tokenization(dataDinamis)
         ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
@@ -489,9 +490,9 @@ for loopData in dataAI:
     # print('-------------HASIL YANG SALAH-------------')
     # loopHasilProgram(hasilSalah)
 
-print('----------------------------------------------------')
+print('---------------------------------------')
 print('-------------AKURASI SISTEM LEVEL DOKUMEN-------------')
-hasilTotal2, conMat2, acc2, pre2, rec2, hasilSalah2, fMeasure2 = evaluasiSistem(hasilLabelManual2, hasilLoop2)
+hasilTotal2, conMat2, acc2, pre2, rec2, hasilSalah2, fMeasure2 = evaluasiSistem(labelManualArr, hasilLoop2)
 print('sentiment score total lvl dokumen: ', hasilTotal2)
 print('accuracy lvl dokumen: ', acc2)
 print('confusion matrix lvl dokumen: ', conMat2)
