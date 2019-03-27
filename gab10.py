@@ -362,7 +362,11 @@ def itungFMeasure(pre, rec, beta):
     if (pre == 'none' or rec == 'none'):
             hasil = 'none'
     else:
-        hasil = (((beta*beta) + 1)*pre*rec)/(pre+rec)
+        tempPembagi = (beta*beta*pre)+rec
+        if (tempPembagi == 0):
+            hasil = 'none'
+        else:
+            hasil = (((beta*beta) + 1)*pre*rec)/((beta*beta*pre)+rec)
     return hasil
 
 # -------------itung evaluasi sistem-------------
