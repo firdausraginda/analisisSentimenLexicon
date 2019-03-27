@@ -336,18 +336,31 @@ def loopHasilProgram(hasilProgram):
         idx += 1
         print('hasil ke-', idx, ': ', data)
 
+# -------------itung precision dan recall-------------
+def hitungPreRec(truePositif, pembagi1, pembagi2, pembagi3):
+    hasilPrecRec = None
+    pembagi = pembagi1 + pembagi2 + pembagi3
+    if (pembagi == 0) :
+        hasilPrecRec = 'none'
+    else:
+        hasilPrecRec = truePositif / pembagi 
+    
+    return hasilPrecRec
+
+# -------------itung F-Measure-------------
+def itungFMeasure(pre, rec, beta):
+    hasil = None
+    if (pre == 'none' or rec == 'none'):
+            hasil = 'none'
+    else:
+        hasil = (((beta*beta) + 1)*pre*rec)/(pre+rec)
+    return hasil
+
 # -------------itung evaluasi sistem-------------
-def evaluasiSistem():
-    jmlData = int(len(hasilImport))
+def evaluasiSistem(labelManualParam, loopSistem):
+    jmlData = int(len(loopSistem))
     countNilaiTotal = 0
     arraySalah = []
-
-    prePos = 0
-    preNeg = 0
-    preNet = 0
-    recPos = 0
-    recNeg = 0
-    recNet = 0
 
     countPosPos = 0
     countPosNeg = 0
@@ -361,60 +374,69 @@ def evaluasiSistem():
 
     for i in range(0, jmlData):
         # positif
-        if (hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'positif'):
+        if (labelManualParam[i] == 'positif' and loopSistem[i][2] == 'positif'):
             countPosPos += 1
-        elif(hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'negatif'):
+        elif(labelManualParam[i] == 'positif' and loopSistem[i][2] == 'negatif'):
             countPosNeg += 1
-            arraySalah.append(hasilLoop[i])
-        elif(hasilLabelManual[i] == 'positif' and hasilLoop[i][2] == 'netral'):
+            arraySalah.append(loopSistem[i])
+        elif(labelManualParam[i] == 'positif' and loopSistem[i][2] == 'netral'):
             countPosNet += 1
-            arraySalah.append(hasilLoop[i])
+            arraySalah.append(loopSistem[i])
         # negatif
-        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'positif'):
+        elif(labelManualParam[i] == 'negatif' and loopSistem[i][2] == 'positif'):
             countNegPos += 1
-            arraySalah.append(hasilLoop[i])
-        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'negatif'):
+            arraySalah.append(loopSistem[i])
+        elif(labelManualParam[i] == 'negatif' and loopSistem[i][2] == 'negatif'):
             countNegNeg += 1
-        elif(hasilLabelManual[i] == 'negatif' and hasilLoop[i][2] == 'netral'):
+        elif(labelManualParam[i] == 'negatif' and loopSistem[i][2] == 'netral'):
             countNegNet += 1
-            arraySalah.append(hasilLoop[i])
+            arraySalah.append(loopSistem[i])
         # netral
-        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'positif'):
+        elif(labelManualParam[i] == 'netral' and loopSistem[i][2] == 'positif'):
             countNetPos += 1
-            arraySalah.append(hasilLoop[i])
-        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'negatif'):
+            arraySalah.append(loopSistem[i])
+        elif(labelManualParam[i] == 'netral' and loopSistem[i][2] == 'negatif'):
             countNetNeg += 1
-            arraySalah.append(hasilLoop[i])
-        elif(hasilLabelManual[i] == 'netral' and hasilLoop[i][2] == 'netral'):
+            arraySalah.append(loopSistem[i])
+        elif(labelManualParam[i] == 'netral' and loopSistem[i][2] == 'netral'):
             countNetNet += 1
         # total sentiment score
-        countNilaiTotal += hasilLoop[i][1]
+        countNilaiTotal += loopSistem[i][1]
 
     # precision positif
-    prePos = (countPosPos / (countPosPos + countNegPos + countNetPos)) * 100
+    prePos = hitungPreRec(countPosPos, countPosPos, countNegPos, countNetPos)
     # precision negatif
-    preNeg = (countNegNeg / (countPosNeg + countNegNeg + countNetNeg)) * 100
+    preNeg = hitungPreRec(countNegNeg, countPosNeg, countNegNeg, countNetNeg)
     # precision netral        
-    preNet = (countNetNet / (countPosNet + countNegNet + countNetNet)) * 100
+    preNet = hitungPreRec(countNetNet, countPosNet, countNegNet, countNetNet)
 
     # recall positif
-    recPos = (countPosPos / (countPosPos + countPosNeg + countPosNet)) * 100
+    recPos = hitungPreRec(countPosPos, countPosPos, countPosNeg, countPosNet)
     # recall negatif
-    recNeg = (countNegNeg / (countNegPos + countNegNeg + countNegNet)) * 100
+    recNeg = hitungPreRec(countNegNeg, countNegPos, countNegNeg, countNegNet)
     # recall netral
-    recNet = (countNetNet / (countNetPos + countNetNeg + countNetNet)) * 100
+    recNet = hitungPreRec(countNetNet, countNetPos, countNetNeg, countNetNet)
 
     accuracy = ((countPosPos + countNegNeg + countNetNet) / (countPosPos + countNegPos + countNetPos + countPosNeg + countNegNeg + countNetNeg + countPosNet + countNegNet + countNetNet)) * 100
     confusionMatrix = countPosPos, countNegPos, countNetPos, countPosNeg, countNegNeg, countNetNeg, countPosNet, countNegNet, countNetNet
     precision = prePos, preNeg, preNet
     recall = recPos, recNeg, recNet
+    
+    # f-measure positif
+    fmPos = itungFMeasure(prePos, recPos, 1)
+    # f-measure negatif
+    fmNeg = itungFMeasure(preNeg, recNeg, 1)
+    # f-measure netral
+    fmNet = itungFMeasure(preNet, recNet, 1)
+    # f-measure semua
+    fMeasure = fmPos, fmNeg, fmNet
 
-    return countNilaiTotal, confusionMatrix, accuracy, precision, recall, arraySalah
+    return countNilaiTotal, confusionMatrix, accuracy, precision, recall, arraySalah, fMeasure
 
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport, hasilLabelManual = importExcelDataSet(ai_suo)
+hasilImport, hasilLabelManual = importExcelDataSet(ai_phg)
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
@@ -438,13 +460,14 @@ for dataDinamis in hasilImport:
 print('-------------LOOPING HASIL PROGRAM-------------')
 loopHasilProgram(hasilLoop)
 
-print('-------------AKURASI SISTEM-------------')
-hasilTotal, conMat, acc, pre, rec, hasilSalah = evaluasiSistem()
-print('accuracy: ', acc)
+print('-------------AKURASI SISTEM LVL KALIMAT-------------')
+hasilTotal, conMat, acc, pre, rec, hasilSalah, fMeasure = evaluasiSistem(hasilLabelManual, hasilLoop)
 print('sentiment score total: ', hasilTotal)
+print('accuracy: ', acc)
 print('confusion matrix: ', conMat)
 print('precision: ', pre)
 print('recall: ', rec)
+print('F-Measure lvl kalimat: ', fMeasure)
 
 print('-------------HASIL YANG SALAH-------------')
 loopHasilProgram(hasilSalah)
