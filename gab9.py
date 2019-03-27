@@ -437,7 +437,7 @@ def evaluasiSistem(labelManualParam, loopSistem):
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport, hasilLabelManual = importExcelDataSet(ai_vir)
+hasilImport, hasilLabelManual = importExcelDataSet(ai_zka)
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
