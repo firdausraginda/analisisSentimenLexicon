@@ -22,6 +22,7 @@ ai_zka = dataset['AI-ZKA']
 ai_jdn = dataset['AI-JDN']
 ai_vir = dataset['AI-VIR']
 ai_phg = dataset['AI-PHG']
+data_dummy = dataset['data-dummy']
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
 positif = inSetLexicon['positif']
@@ -436,7 +437,7 @@ def evaluasiSistem(labelManualParam, loopSistem):
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport, hasilLabelManual = importExcelDataSet(ai_phg)
+hasilImport, hasilLabelManual = importExcelDataSet(ai_vir)
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
