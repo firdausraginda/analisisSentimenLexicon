@@ -5,7 +5,8 @@
 # *sudah bisa looping smua dataset
 # *dataset matkul AI semua dosen
 # *buat lexicon baru
-# *untuk ngitung akurasi, precision, recall, f-measure lvl kalimat per dokumen
+# *untuk ngitung akurasi, precision, recall, f-measure lvl kalimat
+# *pake custom stopword removal
 
 # -------------register lib-------------
 # import excel
@@ -39,6 +40,7 @@ stemmer = factory.create_stemmer()
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 factory = StopWordRemoverFactory()
 stopword = factory.create_stop_word_remover()
+getStopWord = factory.get_stop_words()
 
 #import custom lexicon
 from lexiconCustom import lexCustom
@@ -58,13 +60,26 @@ def importExcelDataSet(selectedSheet):
 # -------------stopword removal-------------
 def stopwordRemoval(data):
     hasil = []
-    hasil2 = []
+    # hasil2 = []
+    stopwordCustom = []
+    nonStopWord = ['tidak', 'nggak']
+
+    # for kata in data:
+    #     hasil.append(stopword.remove(kata))
+    # for kata in hasil:
+    #     if kata != '':
+    #         hasil2.append(kata) 
+
+    # custom stopword
+    isiStopWord = getStopWord
+    for isi in isiStopWord:
+        if isi not in nonStopWord:
+            stopwordCustom.append(isi)
     for kata in data:
-        hasil.append(stopword.remove(kata))
-    for kata in hasil:
-        if kata != '':
-            hasil2.append(kata) 
-    return hasil2
+        if kata not in stopwordCustom:
+            hasil.append(kata)
+
+    return hasil
 
 # -------------punctuation removal dan case conversion-------------
 def punctuationRemoval(data):
@@ -441,15 +456,15 @@ def evaluasiSistem(labelManualParam, loopSistem):
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport, hasilLabelManual = importExcelDataSet(ai_unw)
+hasilImport, hasilLabelManual = importExcelDataSet(ai_jdn)
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
     ngramPositif, ngramNegatif, ngram1 = sentiWordBeforeStem(hasilToken)
     hasilStem = stemmingWord(ngram1)
     hasilNoPuct = punctuationRemoval(hasilStem)
-    # hasilStopWord = stopwordRemoval(hasilNoPuct)
-    hasilPraprosesCoding = hasilNoPuct
+    hasilStopWord = stopwordRemoval(hasilNoPuct)
+    hasilPraprosesCoding = hasilStopWord
     
     print('kalimat lengkap : ', dataDinamis)
     print('hasil praposes: ', hasilPraprosesCoding)

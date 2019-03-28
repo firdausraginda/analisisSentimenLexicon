@@ -27,4 +27,4 @@ from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFacto
 
 factory = StopWordRemoverFactory()
 stopwords = factory.get_stop_words()
-# print(stopwords)
+print(stopwords)
