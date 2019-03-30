@@ -62,7 +62,8 @@ def stopwordRemoval(data):
     hasil = []
     # hasil2 = []
     stopwordCustom = []
-    nonStopWord = ['tidak', 'nggak']
+    moreStopWord = ['pa']
+    nonStopWord = ['tidak', 'nggak', 'tapi', 'tolong']
 
     # for kata in data:
     #     hasil.append(stopword.remove(kata))
@@ -75,6 +76,8 @@ def stopwordRemoval(data):
     for isi in isiStopWord:
         if isi not in nonStopWord:
             stopwordCustom.append(isi)
+    for isi in moreStopWord:
+        stopwordCustom.append(isi)
     for kata in data:
         if kata not in stopwordCustom:
             hasil.append(kata)
@@ -456,7 +459,7 @@ def evaluasiSistem(labelManualParam, loopSistem):
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport, hasilLabelManual = importExcelDataSet(ai_jdn)
+hasilImport, hasilLabelManual = importExcelDataSet(ai_vir)
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
