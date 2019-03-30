@@ -63,7 +63,7 @@ def stopwordRemoval(data):
     # hasil2 = []
     stopwordCustom = []
     moreStopWord = ['pa']
-    nonStopWord = ['tidak', 'nggak', 'tapi', 'tolong']
+    nonStopWord = ['tidak', 'nggak']
 
     # for kata in data:
     #     hasil.append(stopword.remove(kata))
