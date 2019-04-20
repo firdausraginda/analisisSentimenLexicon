@@ -11,18 +11,18 @@
 # -------------register lib-------------
 # import excel
 from openpyxl import load_workbook
-dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19.xlsx', data_only=True)
-ai_sjn = dataset['AI-SJN']
-ai_adf = dataset['AI-ADF']
-ai_suo = dataset['AI-SUO']
-ai_unw = dataset['AI-UNW']
-ai_dqu = dataset['AI-DQU']
-ai_knr = dataset['AI-KNR']
-ai_hiw = dataset['AI-HIW']
-ai_zka = dataset['AI-ZKA']
-ai_jdn = dataset['AI-JDN']
-ai_vir = dataset['AI-VIR']
-ai_phg = dataset['AI-PHG']
+dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19_siap_sidang.xlsx', data_only=True)
+dosen_1 = dataset['DOSEN-1']
+dosen_2 = dataset['DOSEN-2']
+dosen_3 = dataset['DOSEN-3']
+dosen_4 = dataset['DOSEN-4']
+dosen_5 = dataset['DOSEN-5']
+dosen_6 = dataset['DOSEN-6']
+dosen_7 = dataset['DOSEN-7']
+dosen_8 = dataset['DOSEN-8']
+dosen_9 = dataset['DOSEN-9']
+dosen_10 = dataset['DOSEN-10']
+dosen_11 = dataset['DOSEN-11']
 data_dummy = dataset['data-dummy']
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
@@ -459,7 +459,7 @@ def evaluasiSistem(labelManualParam, loopSistem):
 # -------------main program-------------
 hasilLoop = []
 
-hasilImport, hasilLabelManual = importExcelDataSet(data_dummy)
+hasilImport, hasilLabelManual = importExcelDataSet(dosen_9)
 
 for dataDinamis in hasilImport:
     hasilToken = tokenization(dataDinamis)
