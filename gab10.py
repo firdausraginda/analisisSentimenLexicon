@@ -11,6 +11,8 @@
 
 # -------------register lib-------------
 # import excel
+import openpyxl
+getSheets = openpyxl.load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19_siap_sidang.xlsx')
 from openpyxl import load_workbook
 dataset = load_workbook('../dataset_TA/AI_EDOM_ganjil_18_19_siap_sidang.xlsx', data_only=True)
 eval_all = dataset['eval-all']
@@ -29,6 +31,11 @@ dataAI = [dosen_1, dosen_2, dosen_3, dosen_4, dosen_5, dosen_6, dosen_7, dosen_8
 inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
 positif = inSetLexicon['positif']
+
+# write excel
+from openpyxl import Workbook
+from openpyxl.styles import Font
+book = Workbook()
 
 # tokenization
 from nltk.tokenize import sent_tokenize, word_tokenize
@@ -63,6 +70,28 @@ def importExcelDataSet(selectSheet):
     labelManual2 = selectSheet.cell(row=2, column=16).value
 
     return hasil, labelManual, labelManual2
+
+# -------------write excel-------------
+def writeExcel(dataHasilPrediksi, sentimentScoreDok, idx):
+    sheet = book.create_sheet(getSheets.sheetnames[idx], -1)
+    
+    sheet['A1'] = 'Feedback'
+    sheet['B1'] = 'Sentiment Score'
+    sheet['C1'] = 'Sentiment'
+    sheet['E1'] = 'Sentiment Score Dokumen ini'
+    sheet['E2'] = sentimentScoreDok
+
+    sheet['A1'].font = Font(bold=True)
+    sheet['B1'].font = Font(bold=True)
+    sheet['C1'].font = Font(bold=True)
+    sheet['E1'].font = Font(bold=True)
+
+    for i in range(2, len(dataHasilPrediksi)+2):
+        sheet.cell(row=i, column=1).value = dataHasilPrediksi[i-2][0]
+        sheet.cell(row=i, column=2).value = dataHasilPrediksi[i-2][1]
+        sheet.cell(row=i, column=3).value = dataHasilPrediksi[i-2][2]
+
+    book.save('hasil sistem semua dokumen.xlsx')
 
 # -------------stopword removal-------------
 def stopwordRemoval(data):
@@ -466,6 +495,7 @@ def evaluasiSistem(labelManualParam, loopSistem):
 # -------------main program-------------
 hasilLoop2 = []
 labelManualArr = []
+iterationDokumen = 0
 
 for loopData in dataAI:
     
@@ -504,6 +534,9 @@ for loopData in dataAI:
     print('precision lvl kalimat: ', pre)
     print('recall lvl kalimat: ', rec)
     print('F-Measure lvl kalimat: ', fMeasure)
+
+    writeExcel(hasilLoop, hasilTotal, iterationDokumen)
+    iterationDokumen += 1
 
     hasilCekSentimen2 = cekSentimen(hasilTotal)
     hasilLoop2.append([None, hasilTotal, hasilCekSentimen2])
