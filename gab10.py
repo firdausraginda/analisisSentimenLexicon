@@ -28,7 +28,7 @@ dosen_9 = dataset['DOSEN-9']
 dosen_10 = dataset['DOSEN-10']
 dosen_11 = dataset['DOSEN-11']
 dataAI = [dosen_1, dosen_2, dosen_3, dosen_4, dosen_5, dosen_6, dosen_7, dosen_8, dosen_9, dosen_10, dosen_11]
-inSetLexicon = load_workbook('../../inset lexicon/InSet-Lexicon/inset.xlsx')
+inSetLexicon = load_workbook('../inset lexicon/InSet-Lexicon/inset.xlsx')
 negatif = inSetLexicon['negatif']
 positif = inSetLexicon['positif']
 
@@ -138,6 +138,7 @@ def stemmingWord(data):
 
 # -------------tokenisasi-------------
 def tokenization(data):
+    data = str(data)
     hasil = word_tokenize(data.lower())
     return hasil
 
